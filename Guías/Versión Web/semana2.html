@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión BD</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="https://www.cesde.edu.co/wp-content/uploads/2022/11/cropped-favicon-32x32.png" sizes="32x32">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                    },
+                    colors: {
+                        cesde: {
+                            primary: '#D60057', // Magenta Institucional
+                            dark: '#1a1a1a',
+                            sidebar: '#000000',
+                            light: '#f3f4f6',
+                            accent: '#FFC107'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Transición suave para el sidebar */
+        #sidebar {
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Clase para ocultar sidebar en desktop */
+        .sidebar-closed {
+            margin-left: -18rem;
+            /* w-72 es 18rem */
+        }
+
+        /* Estilos gráficos MER */
+        .shape-entity {
+            border: 2px solid #D60057;
+            background-color: white;
+            padding: 10px 20px;
+            display: inline-block;
+            font-weight: bold;
+            border-radius: 2px;
+            box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1);
+        }
+
+        .shape-attribute {
+            border: 2px solid #4B5563;
+            background-color: white;
+            padding: 8px 15px;
+            border-radius: 50%;
+            display: inline-block;
+            font-size: 0.9em;
+        }
+
+        .shape-relation {
+            width: 80px;
+            height: 80px;
+            background-color: #f3f4f6;
+            border: 2px solid #1a1a1a;
+            transform: rotate(45deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+
+        .shape-relation span {
+            transform: rotate(-45deg);
+            font-weight: bold;
+            font-size: 0.8em;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-700 h-screen flex flex-col md:flex-row overflow-hidden">
+
+
+    <header class="md:hidden bg-black text-white p-4 flex justify-between items-center z-50 shadow-md">
+        <div class="font-bold tracking-wider text-lg">GESTIÓN DB</div>
+        <button id="mobile-menu-btn" class="focus:outline-none text-cesde-primary">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+            </svg>
+        </button>
+    </header>
+
+    <aside id="sidebar"
+        class="bg-cesde-sidebar text-gray-400 w-72 flex-shrink-0 fixed md:relative inset-y-0 left-0 transform -translate-x-full md:translate-x-0 z-40 border-r border-gray-800 flex flex-col h-full">
+
+        <div class="p-6 text-center border-b border-gray-800">
+            <img src="src/logo.png" alt="CESDE Logo"
+                class="w-32 mx-auto h-auto opacity-90 hover:opacity-100 transition-opacity">
+        </div>
+
+        <nav class="flex-1 overflow-y-auto py-4">
+            <ul class="space-y-1">
+                <li>
+                    <a href="index.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm">
+                        Recurso Global
+                    </a>
+                </li>
+                <li>
+                    <a href="semana2.html"
+                        class="block py-2 px-6 bg-gray-900 border-l-4 border-cesde-primary text-white font-medium text-sm">
+                        Semana 2: Fundamentos BD
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 3: Normalización
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 4: Normalización
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 5: Lenguaje SQL
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 6: Entrega Momento 1
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 7: Constraint
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 8: Recuperación Datos
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 9: Recuperación Dato
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 10: Consultar Internas
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 11: Update - Delete
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 12: Entrega Momento 2
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 13: Procedimientos Almacenados
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 14: Procedimientos Almacenados
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 15: Power BI
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 16: Power BI
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 17: Entrega Momento 3
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 18: Retroalimentación Curso
+                    </a>
+                </li>
+            </ul>
+            </ul>
+        </nav>
+
+        <div class="p-4 border-t border-gray-800 text-xs text-center text-gray-600">
+            v1.1.0 - Gestión Base de Datos
+        </div>
+    </aside>
+
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden md:hidden"></div>
+
+    <main class="flex-1 overflow-y-auto w-full relative bg-white">
+
+        <div
+            class="sticky top-0 bg-white/90 backdrop-blur z-20 border-b border-gray-100 px-6 py-3 flex items-center justify-between">
+            <button id="desktop-toggle-btn"
+                class="hidden md:flex items-center text-gray-500 hover:text-cesde-primary transition-colors focus:outline-none"
+                title="Ocultar/Mostrar Menú">
+                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
+                    </path>
+                </svg>
+                <span class="text-xs font-bold uppercase tracking-wider">Menú</span>
+            </button>
+            <div class="text-xs text-gray-400">Gestión Base de Datos</div>
+        </div>
+
+        <div class="max-w-6xl mx-auto p-6 md:p-10 pb-20">
+
+            <div class="border-b-4 border-cesde-primary inline-block mb-8">
+                <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-1">Conceptos Generales y Diagramación</h1>
+                <span class="text-sm text-gray-500 font-medium uppercase tracking-wide">Unidad I: Diseño de bases de datos - Semana 2</span>
+            </div>
+
+            <section class="mb-12">
+                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-r-lg shadow-sm">
+                    <h2 class="text-xl font-bold text-gray-800 mb-3 flex items-center">
+                        Situación: La Tienda de Barrio
+                    </h2>
+                    <p class="text-gray-700 mb-4">
+                        Imaginen que son dueños de una tienda. Llega un proveedor y deja 50 productos. Llega un cliente
+                        y pide fiado.
+                        <strong>¿Cómo anotas esto en un cuaderno para que no se pierda nada?</strong>
+                    </p>
+                    <div class="bg-white p-4 rounded border border-gray-200 font-mono text-sm text-gray-600 mb-4">
+                        <p class="mb-2 text-gray-400 border-b pb-1">// Cuaderno de notas (Excel)</p>
+                        <p>1. Juan Pérez - Fiado - Leche - $3000</p>
+                        <p>2. María - Pagó deuda - $5000</p>
+                        <p>3. Proveedor - Dejó 50 papas</p>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-cesde-primary text-sm uppercase">Análisis Crítico:</h3>
+                        <p class="text-gray-700 italic">"¿Si quiero saber cuánta leche vendí en total el último mes,
+                            cuánto tiempo tardas en darme el dato con tu cuaderno?"</p>
+                        <p class="mt-2 font-semibold">Tener "Datos anotados" no es lo mismo que tener "Información
+                            gestionable". Necesitamos una Base de Datos Relacional.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mb-12">
+                <h2 class="text-xl font-bold text-cesde-primary mb-4 border-b pb-2">Conceptos Fundamentales</h2>
+
+                <div class="grid md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-gray-50 p-5 rounded-lg border-t-4 border-gray-800">
+                        <h3 class="font-bold text-lg mb-2">Dato</h3>
+                        <p class="text-gray-600 text-sm">Unidad mínima sin contexto. Por sí solo es ruido.<br><em>Ej:
+                                "Azul", "1.80".</em></p>
+                    </div>
+                    <div class="bg-gray-50 p-5 rounded-lg border-t-4 border-cesde-primary">
+                        <h3 class="font-bold text-lg mb-2">Información</h3>
+                        <p class="text-gray-600 text-sm">Dato procesado con contexto que permite tomar
+                            decisiones.<br><em>Ej: "Santiago mide 1.80m".</em></p>
+                    </div>
+                    <div class="bg-gray-50 p-5 rounded-lg border-t-4 border-gray-800">
+                        <h3 class="font-bold text-lg mb-2">Base de Datos (BD)</h3>
+                        <p class="text-gray-600 text-sm">Conjunto organizado de información almacenada estructuradamente
+                            para facilitar su acceso, administración y actualización.</p>
+                    </div>
+                    <div class="bg-gray-50 p-5 rounded-lg border-t-4 border-gray-800">
+                        <h3 class="font-bold text-lg mb-2">SGBD (Sistema de Gestión de Bases de Datos): </h3>
+                        <p class="text-gray-600 text-sm">Es la herramienta (software) que usaremos después para
+                            administrar esa base de datos. Hoy somos nosotros el SGBD manual.</p>
+                    </div>
+                </div>
+
+                <div class="mb-8">
+                    <h3 class="text-xl font-bold text-cesde-primary mb-4 border-b pb-2">¿Qué es una Base de Datos?</h3>
+                    <ul class="list-disc list-inside text-gray-700 ml-4 space-y-1">
+                        <p class="text-gray-600 text-sm">Una base de datos (BD) es un conjunto organizado de información
+                            que se almacena de manera estructurada para facilitar su acceso, administración y
+                            actualización. Se utilizan en diversas aplicaciones, desde sistemas bancarios hasta redes
+                            sociales y tiendas en línea.</p>
+                        <p class="text-gray-600 text-sm"><strong>Propósito y aplicaciones de una Base de Datos:
+                            </strong>
+                            El propósito principal de una base de datos es almacenar, organizar y gestionar datos de
+                            forma eficiente. Algunos ejemplos de aplicaciones son:
+                        </p>
+                        <li><strong>Empresas:</strong> Gestión de clientes, ventas, empleados.</li>
+                        <li><strong>Hospitales:</strong> Historial clínico de pacientes.</li>
+                        <li><strong>Universidades:</strong> Información de estudiantes, cursos, calificaciones.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="mb-12">
+                <h2 class="text-xl font-bold text-cesde-primary mb-4 border-b pb-2">Comparativa de Tecnologías</h2>
+                <div class="overflow-x-auto shadow-lg rounded-lg border border-gray-200">
+                    <table class="min-w-full bg-white text-sm text-left">
+                        <thead class="bg-gray-900 text-white">
+                            <tr>
+                                <th class="py-3 px-4 font-semibold uppercase text-xs">Característica</th>
+                                <th class="py-3 px-4 font-semibold uppercase text-xs bg-green-900">NoSQL</th>
+                                <th class="py-3 px-4 font-semibold uppercase text-xs bg-blue-900">SQL Server</th>
+                                <th class="py-3 px-4 font-semibold uppercase text-xs bg-green-700">Excel</th>
+                                <th class="py-3 px-4 font-semibold uppercase text-xs bg-yellow-600">Power BI</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            <tr>
+                                <td class="py-3 px-4 font-bold bg-gray-50">Uso Principal</td>
+                                <td class="py-3 px-4">Gestión de datos no relacionales, escalabilidad horizontal</td>
+                                <td class="py-3 px-4">Gestión de bases de datos relacionales</td>
+                                <td class="py-3 px-4">Hoja de cálculo, análisis de datos a pequeña escala</td>
+                                <td class="py-3 px-4">Visualización y análisis de datos, inteligencia empresarial</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 px-4 font-bold bg-gray-50">Escala de datos</td>
+                                <td class="py-3 px-4">Escalabilidad horizontal masiva</td>
+                                <td class="py-3 px-4">Grandes volúmenes de datos</td>
+                                <td class="py-3 px-4">Limitado (aprox. 1 millón de filas)</td>
+                                <td class="py-3 px-4">Grandes volúmenes de datos (conectado a fuentes externas)</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 px-4 font-bold bg-gray-50">Rendimiento</td>
+                                <td class="py-3 px-4">Alto rendimiento para operaciones de lectura/escritura,
+                                    especialmente con datos no estructurados</td>
+                                <td class="py-3 px-4">Alto rendimiento, optimizado para operaciones complejas</td>
+                                <td class="py-3 px-4">Rendimiento decrece con grandes conjuntos de datos</td>
+                                <td class="py-3 px-4">Depende de la fuente de datos, optimizado para visualización</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 px-4 font-bold bg-gray-50">Integridad</td>
+                                <td class="py-3 px-4">Consistencia Eventual (CAP)</td>
+                                <td class="py-3 px-4">Estricta (ACID), Transacciones</td>
+                                <td class="py-3 px-4">Propenso a error humano</td>
+                                <td class="py-3 px-4">Solo lectura/visualización</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 px-4 font-bold bg-gray-50">Integridad de datos</td>
+                                <td class="py-3 px-4">Consistencia eventual, CAP theorem (variedad de modelos)</td>
+                                <td class="py-3 px-4">Restricciones, transacciones, control de concurrencia (ACID)</td>
+                                <td class="py-3 px-4">Propenso a errores humanos</td>
+                                <td class="py-3 px-4">Depende de la fuente de datos, seguridad a nivel de datos y
+                                    usuarios</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 px-4 font-bold bg-gray-50">Acceso concurrente</td>
+                                <td class="py-3 px-4">Excelente soporte para alta concurrencia</td>
+                                <td class="py-3 px-4">Soporte robusto para múltiples usuarios</td>
+                                <td class="py-3 px-4">Limitado, problemas de integridad con múltiples usuarios</td>
+                                <td class="py-3 px-4">Soporte para múltiples usuarios (depende de la fuente de datos)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 px-4 font-bold bg-gray-50">Seguridad</td>
+                                <td class="py-3 px-4">Depende del sistema NoSQL específico</td>
+                                <td class="py-3 px-4">Seguridad granular a nivel de usuario y objeto</td>
+                                <td class="py-3 px-4">Protección con contraseña limitada</td>
+                                <td class="py-3 px-4">Seguridad a nivel de datos y usuarios</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 px-4 font-bold bg-gray-50">Acceso concurrente</td>
+                                <td class="py-3 px-4">Excelente soporte para alta concurrencia</td>
+                                <td class="py-3 px-4">Soporte robusto para múltiples usuarios</td>
+                                <td class="py-3 px-4">Limitado, problemas de integridad con múltiples usuarios</td>
+                                <td class="py-3 px-4">Soporte para múltiples usuarios (depende de la fuente de datos)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 px-4 font-bold bg-gray-50">Lenguaje de consulta</td>
+                                <td class="py-3 px-4">Varía (JSON, APIs, etc.)</td>
+                                <td class="py-3 px-4">SQL</td>
+                                <td class="py-3 px-4">Funciones de hoja de cálculo</td>
+                                <td class="py-3 px-4">DAX</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 px-4 font-bold bg-gray-50">Manipulación de datos</td>
+                                <td class="py-3 px-4">Modelos de datos flexibles (documentos, clave-valor, grafos, etc.)
+                                </td>
+                                <td class="py-3 px-4">Operaciones complejas, uniones, agregaciones</td>
+                                <td class="py-3 px-4">Funciones de hoja de cálculo limitadas</td>
+                                <td class="py-3 px-4">Transformación de datos, modelado</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 px-4 font-bold bg-gray-50">Automatización</td>
+                                <td class="py-3 px-4">APIs, scripts, herramientas de administración</td>
+                                <td class="py-3 px-4">Procedimientos almacenados, desencadenadores, trabajos</td>
+                                <td class="py-3 px-4">Macros de VBA limitadas</td>
+                                <td class="py-3 px-4">Actualización automatizada de datos</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 px-4 font-bold bg-gray-50">Programación</td>
+                                <td class="py-3 px-4">APIs, SDKs para varios lenguajes</td>
+                                <td class="py-3 px-4">Integración con C#, Python, etc.</td>
+                                <td class="py-3 px-4">Macros de VBA</td>
+                                <td class="py-3 px-4">Limitado, enfoque en visualización</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 px-4 font-bold bg-gray-50">Visualización</td>
+                                <td class="py-3 px-4">Depende de herramientas externas o APIs</td>
+                                <td class="py-3 px-4">Limitada</td>
+                                <td class="py-3 px-4">Gráficos básicos</td>
+                                <td class="py-3 px-4">Visualizaciones interactivas y avanzadas</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 px-4 font-bold bg-gray-50">Idoneidad</td>
+                                <td class="py-3 px-4">Aplicaciones web, móviles, big data, tiempo real, datos no
+                                    estructurados</td>
+                                <td class="py-3 px-4">Entornos empresariales con grandes volúmenes de datos
+                                    estructurados</td>
+                                <td class="py-3 px-4">Análisis de datos personales o a pequeña escala</td>
+                                <td class="py-3 px-4">Informes y paneles de control, análisis de tendencias</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="mb-12">
+                <h3 class="text-xl font-bold text-cesde-primary mb-4 border-b pb-2">Tipos de Bases de Datos</h3>
+                <p class="text-gray-600 text-sm">Existen distintos tipos de bases de datos, pero las más comunes son:
+                </p>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="border p-4 rounded hover:shadow-md transition">
+                        <h4 class="font-bold text-gray-800">1. Relacionales</h4>
+                        <p class="text-sm text-gray-600 mt-1">Organizan datos en tablas con relaciones. Ej: SQL Server,
+                            PostgreSQL, MySQL.</p>
+                    </div>
+                    <div class="border p-4 rounded hover:shadow-md transition">
+                        <h4 class="font-bold text-gray-800">2. No Relacionales (NoSQL)</h4>
+                        <p class="text-sm text-gray-600 mt-1">Almacenan datos en estructuras más flexibles como
+                            documentos, claves-valor o grafos. Ej: MongoDB, Firebase.</p>
+                    </div>
+                    <div class="border p-4 rounded hover:shadow-md transition">
+                        <h4 class="font-bold text-gray-800">3. Jerárquicas</h4>
+                        <p class="text-sm text-gray-500 mt-1">Organizan la información en una estructura de árbol.</p>
+                    </div>
+                    <div class="border p-4 rounded hover:shadow-md transition">
+                        <h4 class="font-bold text-gray-800">4. En Red</h4>
+                        <p class="text-sm text-gray-500 mt-1">Similar a la jerárquica, pero con relaciones más complejas
+                            entre registros.</p>
+                    </div>
+                    <div class="border p-4 rounded hover:shadow-md transition">
+                        <h4 class="font-bold text-gray-800">Fuente a consultar</h4>
+                        <a href="https://aws.amazon.com/es/compare/the-difference-between-relational-and-non-relational-databases/"
+                            target="_blank" class="text-sm text-blue-600 hover:underline mt-1">Diferencias entre
+                            relacionales y no relacionales</a>
+                    </div>
+                    <div class="border p-4 rounded hover:shadow-md transition">
+                        <h4 class="font-bold text-gray-800">Fuente a consultar</h4>
+                        <a href="https://www.datacamp.com/es/blog/types-of-databases-overview" target="_blank"
+                            class="text-sm text-blue-600 hover:underline mt-1">Tipos de bases de datos</a>
+                    </div>
+                </div>
+            </section>
+            <section class="mb-12">
+                <h3 class="text-xl font-bold text-cesde-primary mb-4 border-b pb-2">No Relacionales (NoSQL):</h3>
+                <p class="text-sm text-gray-600 mt-1">MongoDB, Apache Cassandra, CouchDB, Redis, Neo4j, BigTable, HBase,
+                    Elasticsearch.</p>
+                <div class="grid md:grid-cols-1 gap-8 text-center mb-8">
+                    <div class="flex flex-col items-center">
+                        <div class="h-24 flex items-center justify-center">
+                            <div class="shape-entity">Base de Datos No Relacional</div>
+                        </div>
+                        <img src="src/BDnoRelacional.png" alt="Tabla de una NO BD relacional"
+                            class="mx-auto h-auto opacity-90 hover:opacity-100 transition-opacity">
+                    </div>
+                    <div class="border p-4 rounded hover:shadow-md transition">
+                        <h4 class="font-bold text-gray-800">Fuente a consultar</h4>
+                        <a href="https://learn.microsoft.com/es-es/azure/architecture/data-guide/big-data/non-relational-data"
+                            target="_blank" class="text-sm text-blue-600 hover:underline mt-1">non-relational-data</a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mb-12">
+                <h3 class="text-xl font-bold text-cesde-primary mb-4 border-b pb-2">Componentes de una BD Relacional
+                </h3>
+                <ul class="space-y-3">
+                    <li class="flex items-start">
+                        <span
+                            class="bg-gray-800 text-white text-xs font-bold px-2 py-1 rounded mr-3 mt-1 min-w-[80px] text-center">Tablas</span>
+                        <p class="text-gray-700">Estructura principal donde se almacenan los datos (Entidad lógica).</p>
+                    </li>
+                    <li class="flex items-start">
+                        <span
+                            class="bg-gray-800 text-white text-xs font-bold px-2 py-1 rounded mr-3 mt-1 min-w-[80px] text-center">Registros</span>
+                        <p class="text-gray-700">Cada fila dentro de una tabla representa un conjunto de datos
+                            relacionados.</p>
+                    </li>
+                    <li class="flex items-start">
+                        <span
+                            class="bg-gray-800 text-white text-xs font-bold px-2 py-1 rounded mr-3 mt-1 min-w-[80px] text-center">Campos</span>
+                        <p class="text-gray-700">Cada columna dentro de una tabla representa un atributo o propiedad de
+                            los datos.</p>
+                    </li>
+                    <li class="flex items-start">
+                        <span
+                            class="bg-cesde-primary text-white text-xs font-bold px-2 py-1 rounded mr-3 mt-1 min-w-[80px] text-center">PK</span>
+                        <p class="text-gray-700"><strong>Llave Primaria:</strong> Un identificador único para cada
+                            registro en una tabla. (Ej:
+                            ID, Cédula).</p>
+                    </li>
+                    <li class="flex items-start">
+                        <span
+                            class="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded mr-3 mt-1 min-w-[80px] text-center">FK</span>
+                        <p class="text-gray-700"><strong>Llave Foránea:</strong> Campo que conecta con la PK de otra
+                            tabla para crear una relación.</p>
+                    </li>
+
+                    <div class="grid md:grid-cols-2 gap-8 text-center mb-8">
+                        <div class="flex flex-col items-center">
+                            <div class="h-24 flex items-center justify-center">
+                                <div class="shape-entity">ENTIDAD</div>
+                            </div>
+                            <img src="src/Tabla.png" alt="Tabla de una BD relacional"
+                                class="mx-auto h-auto opacity-90 hover:opacity-100 transition-opacity">
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div class="h-24 flex items-center justify-center">
+                                <div class="shape-entity">Atributos</div>
+                            </div>
+                            <img src="src/Tabla-atributos.png" alt="Tabla de una BD relacional"
+                                class="mx-auto h-auto opacity-90 hover:opacity-100 transition-opacity">
+                        </div>
+                    </div>
+                </ul>
+            </section>
+
+            <section class="mb-12">
+                <h2 class="text-xl font-bold text-cesde-primary mb-4 border-b pb-2">El Modelo Entidad-Relación (MER)
+                </h2>
+                <p class="mb-6 text-gray-600">El MER es el "plano del arquitecto". Utilizamos formas específicas para
+                    diseñar:</p>
+
+                <div class="grid md:grid-cols-3 gap-8 text-center mb-8">
+                    <div class="flex flex-col items-center">
+                        <div class="h-24 flex items-center justify-center">
+                            <div class="shape-entity">ENTIDAD</div>
+                        </div>
+                        <h4 class="font-bold mt-2">Sustantivo</h4>
+                        <p class="text-xs text-gray-500 px-4">Es cualquier objeto, persona, lugar, concepto o evento del
+                            mundo real sobre el cual necesitamos guardar datos<br></p>
+                        <p class="text-xs text-gray-500 px-4"><strong>La prueba de fuego:</strong> ¿Tiene
+                            características propias? Si la
+                            respuesta es sí, es una Entidad.<br><em>Un Coche (físico), un Vuelo (evento), una Materia
+                                (concepto).</em></p>
+                    </div>
+
+                    <div class="flex flex-col items-center">
+                        <div class="h-24 flex items-center justify-center">
+                            <div class="shape-relation"><span>La Relación</span></div>
+                        </div>
+                        <h4 class="font-bold mt-2">El Verbo</h4>
+                        <p class="text-xs text-gray-500 px-4">Es la asociación natural que existe entre dos entidades.
+                            Describe cómo interactúan.<br></p>
+                        <p class="text-xs text-gray-500 px-4">Un Estudiante cursa una Materia. El verbo "cursar" es la
+                            relación.<br></p>
+                    </div>
+
+                    <div class="flex flex-col items-center">
+                        <div class="h-24 flex items-center justify-center">
+                            <div class="shape-attribute">Atributo</div>
+                        </div>
+                        <h4 class="font-bold mt-2">El Adjetivo</h4>
+                        <p class="text-xs text-gray-500 px-4">Son las características o propiedades que describen a una
+                            Entidad. Son los datos atómicos.<br></p>
+                        <p class="text-xs text-gray-500 px-4">Para la entidad Coche: Color, Marca, Modelo, Placa.</p>
+                    </div>
+                </div>
+                <section class="mb-12">
+                    <h3 class="text-xl font-bold text-cesde-primary mb-4 border-b pb-2">Del Diagrama al Modelo
+                        Relacional (Nivel Lógico)
+                    </h3>
+                    <p class="text-gray-700">Aquí explicamos cómo esos dibujos se convierten en "Tablas" mentalmente.
+                    </p>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <span
+                                class="bg-gray-800 text-white text-xs font-bold px-2 py-1 rounded mr-3 mt-1 min-w-[80px] text-center">Entidad
+                            </span>
+                            <p class="text-gray-700">Se convierte en Tabla.
+                            </p>
+                        </li>
+                        <li class="flex items-start">
+                            <span
+                                class="bg-gray-800 text-white text-xs font-bold px-2 py-1 rounded mr-3 mt-1 min-w-[80px] text-center">Atributo
+                            </span>
+                            <p class="text-gray-700">Se convierte en Columna (Campo).</p>
+                        </li>
+                        <li class="flex items-start">
+                            <span
+                                class="bg-gray-800 text-white text-xs font-bold px-2 py-1 rounded mr-3 mt-1 min-w-[80px] text-center">Instancia</span>
+                            <p class="text-gray-700">Cada ocurrencia real (fila) se llama Registro o Tupla.</p>
+                        </li>
+                        <div class="grid md:grid-cols-1 gap-8 text-center mb-8">
+                            <div class="flex flex-col items-center">
+                                <div class="h-24 flex items-center justify-center">
+                                    <div class="shape-entity">DER</div>
+                                </div>
+                                <img src="src/DER.png" alt="Tabla de una BD relacional"
+                                    class="mx-auto h-auto opacity-90 hover:opacity-100 transition-opacity">
+                            </div>
+                        </div>
+                    </ul>
+                    <div class="border p-4 rounded hover:shadow-md transition">
+                        <h4 class="font-bold text-gray-800">¿Dónde se puede realizar diagramas?</h4>
+                        <a href="https://app.diagrams.net/" target="_blank"
+                            class="text-sm text-blue-600 hover:underline mt-1">https://app.diagrams.net/</a> <br>
+                        <a href="https://www.lucidchart.com/pages/es" target="_blank"
+                            class="text-sm text-blue-600 hover:underline mt-1">https://www.lucidchart.com/pages/es</a><br>
+                        <a href="https://miro.com/es/diagrama/" target="_blank"
+                            class="text-sm text-blue-600 hover:underline mt-1">https://miro.com/es/diagrama/</a>
+                    </div>
+                </section>
+
+                <div class="bg-gray-100 p-6 rounded-lg">
+                    <h3 class="font-bold text-lg mb-4 text-cesde-primary"> Tipos de Relaciones en un Modelo Relacional -
+                        Cardinalidad</h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <span
+                                class="bg-gray-800 text-white text-xs font-bold px-2 py-1 rounded mr-3 mt-1">1:1</span>
+                            <div>
+                                <strong class="text-sm block">Uno a Uno</strong>
+                                <span class="text-sm text-gray-600">Un registro se relaciona con un solo registro en
+                                    otra tabla.</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="bg-cesde-primary text-white text-xs font-bold px-2 py-1 rounded mr-3 mt-1">1 a
+                                muchos (1:M)</span>
+                            <div>
+                                <strong class="text-sm block">Uno a Muchos (La más común)</strong>
+                                <span class="text-sm text-gray-600">Un registro en una tabla se relaciona con varios
+                                    registros en otra (Ejemplo: un cliente puede hacer varios pedidos).</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span
+                                class="bg-gray-800 text-white text-xs font-bold px-2 py-1 rounded mr-3 mt-1">M:M</span>
+                            <div>
+                                <strong class="text-sm block">Muchos a Muchos</strong>
+                                <span class="text-sm text-gray-600">Varios registros de una tabla se relacionan con
+                                    varios registros en otra. <br> Estudiantes y Materias. Un estudiante inscribe
+                                    varias materias, una materia tiene varios estudiantes.</span>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="flex flex-col items-center">
+                        <div class="h-24 flex items-center justify-center">
+                            <div class="shape-entity">Diagrama de una Base de Datos</div>
+                        </div>
+                        <img src="src/DER2.png" alt="Diabrama de una base de datos"
+                            class="mx-auto h-auto opacity-90 hover:opacity-100 transition-opacity">
+                    </div>
+                </div>
+            </section>
+
+            <section class="mb-12">
+                <h3 class="font-bold text-lg mb-4 text-cesde-primary"> Preguntas Frecuentes </h3>
+                <div class="grid md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-blue-50 p-5 rounded-lg border border-blue-100">
+                        <h4 class="font-bold text-gray-800 mt-2">¿Cómo sé si algo es una Entidad o un Atributo? </h4>
+                        <p class="text-sm text-gray-600 mt-2"><strong>Pregúntale al dato:</strong> "¿Tengo información
+                            ADICIONAL sobre
+                            ti?". <br>
+                            <strong> Ejemplo:</strong> "Color". ¿Necesito guardar información sobre el "Rojo"? No. -> Es
+                            un Atributo.
+
+                            <strong> Ejemplo:</strong> "Fabricante". ¿Necesito guardar información sobre "Toyota"
+                            (dirección, teléfono,
+                            país)? Sí. -> Entonces "Fabricante" es una Entidad, no un simple texto.
+                        </p>
+
+                    </div>
+                    <div class="bg-purple-50 p-5 rounded-lg border border-purple-100">
+                        <h4 class="font-bold text-gray-800 mt-2">¿Puedo poner dos atributos iguales en una entidad? (Ej:
+                            Teléfono1, Teléfono2)</h4>
+                        <p class="text-sm text-gray-600 mt-2">Conceptualmente es una mala práctica llamada "grupos
+                            repetitivos". Si un cliente tiene 10 teléfonos, ¿crearás 10 columnas? No. Eso nos indica que
+                            "Teléfono" quizás debería ser tratado de forma especial (pero por hoy, lo dejaremos como
+                            atributo simple, advirtiendo que esto evolucionará).
+                        </p>
+
+                    </div>
+                </div>
+            </section>
+
+            <section class="mb-12">
+                <h2 class="text-xl font-bold text-cesde-primary mb-4 border-b pb-2">Ejercicios Prácticos</h2>
+
+                <section class="mb-12 border border-gray-200 rounded-lg overflow-hidden shadow-md bg-white">
+
+                    <div class="bg-gray-900 text-white p-4 flex justify-between items-center">
+                        <div class="flex items-center gap-2">
+                            <h3 class="font-bold text-lg">Demo: La Biblioteca de Barrio</h3>
+                        </div>
+                        <span
+                            class="text-xs bg-cesde-primary text-white px-3 py-1 rounded-full font-semibold tracking-wide">EJEMPLO
+                            GUIADO</span>
+                    </div>
+                    <div class="p-6 md:p-8 space-y-8">
+                        <div>
+                            <h4 class="text-cesde-primary font-bold text-lg mb-2 flex items-center">
+                                <span
+                                    class="bg-cesde-primary text-white w-6 h-6 rounded-full flex items-center justify-center text-xs mr-2">1</span>
+                                Narrativa ("El Requerimiento")
+                            </h4>
+                            <div class="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-400 italic text-gray-700">
+                                Necesitamos organizar los libros. De cada libro nos interesa el título y el número de
+                                páginas. También tenemos usuarios inscritos con nombre y dirección. Los usuarios sacan
+                                libros prestados
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-cesde-primary font-bold text-lg mb-4 flex items-center">
+                                <span
+                                    class="bg-cesde-primary text-white w-6 h-6 rounded-full flex items-center justify-center text-xs mr-2">2</span>
+                                Identificación (Análisis)
+                            </h4>
+                            <div class="grid md:grid-cols-3 gap-4">
+                                <div
+                                    class="border border-gray-200 p-4 rounded-lg text-center hover:shadow-md transition">
+                                    <p class="text-xs text-gray-500 uppercase font-bold tracking-wider mb-2">Sustantivos
+                                    </p>
+                                    <p class="font-semibold text-gray-800 mb-2">Libros, Usuarios</p>
+                                    <div
+                                        class="inline-block bg-gray-100 text-cesde-primary px-3 py-1 rounded-full text-xs font-bold border border-gray-300">
+                                        ⬇ Se convierten en ENTIDADES
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="border border-gray-200 p-4 rounded-lg text-center hover:shadow-md transition">
+                                    <p class="text-xs text-gray-500 uppercase font-bold tracking-wider mb-2">
+                                        Adjetivos/Características</p>
+                                    <p class="font-semibold text-gray-800 mb-2">Título, Páginas, Nombre, Dirección</p>
+                                    <div
+                                        class="inline-block bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-xs font-bold border border-gray-300">
+                                        ⬇ Se convierten en ATRIBUTOS
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="border border-gray-200 p-4 rounded-lg text-center hover:shadow-md transition">
+                                    <p class="text-xs text-gray-500 uppercase font-bold tracking-wider mb-2">Verbos</p>
+                                    <p class="font-semibold text-gray-800 mb-2">Sacan (Prestar)</p>
+                                    <div
+                                        class="inline-block bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-xs font-bold border border-gray-300">
+                                        ⬇ Se convierten en RELACIÓN
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-cesde-primary font-bold text-lg mb-4 flex items-center">
+                                <span
+                                    class="bg-cesde-primary text-white w-6 h-6 rounded-full flex items-center justify-center text-xs mr-2">3</span>
+                                Diagramación (Visual)
+                            </h4>
+                            <div class="bg-gray-50 p-6 rounded-lg border border-dashed border-gray-300">
+                                <ul class="space-y-4 text-sm text-gray-700">
+                                    <li class="flex items-start gap-3">
+                                        <div
+                                            class="mt-1 min-w-[20px] h-[20px] bg-white border-2 border-cesde-primary rounded-sm flex items-center justify-center text-[10px] font-bold text-cesde-primary">
+                                            A</div>
+                                        <div>
+                                            <strong class="text-gray-900">Representa a LIBRO:</strong> Dibuja un
+                                            rectángulo. Saca líneas con óvalos para "Título" y "Páginas".
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <div
+                                            class="mt-1 min-w-[20px] h-[20px] bg-white border-2 border-cesde-primary rounded-sm flex items-center justify-center text-[10px] font-bold text-cesde-primary">
+                                            B</div>
+                                        <div>
+                                            <strong class="text-gray-900">Representa a USUARIO:</strong> Dibuja otro
+                                            rectángulo. Saca líneas con óvalos para "Nombre" y "Dirección".
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <div
+                                            class="mt-1 min-w-[20px] h-[20px] bg-white border-2 border-cesde-primary rounded-sm flex items-center justify-center text-[10px] font-bold text-cesde-primary">
+                                            C</div>
+                                        <div>
+                                            <div>
+                                                <strong class="text-gray-900">Representa a PRESTAR:</strong> Dibuja un
+                                                rombo
+                                                en el medio. Únelo con líneas a LIBRO y a USUARIO.
+                                            </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-cesde-primary font-bold text-lg mb-4 flex items-center">
+                                <span
+                                    class="bg-cesde-primary text-white w-6 h-6 rounded-full flex items-center justify-center text-xs mr-2">4</span>
+                                Traducción a Tablas (Lógico)
+                            </h4>
+                            <div class="flex flex-col md:flex-row gap-6">
+
+                                <div class="flex-1">
+                                    <p class="font-bold text-sm mb-2 text-center text-gray-600">TABLA: LIBROS</p>
+                                    <div class="border border-gray-300 rounded overflow-hidden">
+                                        <table class="w-full text-sm text-left">
+                                            <thead class="bg-gray-100 text-gray-700 font-bold border-b border-gray-300">
+                                                <tr>
+                                                    <th class="p-2 border-r border-gray-300">ID</th>
+                                                    <th class="p-2 border-r border-gray-300">Título</th>
+                                                    <th class="p-2">Páginas</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="bg-white">
+                                                <tr class="border-b border-gray-100">
+                                                    <td class="p-2 border-r text-gray-400">1</td>
+                                                    <td class="p-2 border-r text-gray-400">...</td>
+                                                    <td class="p-2 text-gray-400">...</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="hidden md:flex items-center justify-center text-gray-400">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                                    </svg>
+                                </div>
+
+                                <div class="flex-1">
+                                    <p class="font-bold text-sm mb-2 text-center text-gray-600">TABLA: USUARIOS</p>
+                                    <div class="border border-gray-300 rounded overflow-hidden">
+                                        <table class="w-full text-sm text-left">
+                                            <thead class="bg-gray-100 text-gray-700 font-bold border-b border-gray-300">
+                                                <tr>
+                                                    <th class="p-2 border-r border-gray-300">ID</th>
+                                                    <th class="p-2 border-r border-gray-300">Nombre</th>
+                                                    <th class="p-2">Dirección</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="bg-white">
+                                                <tr class="border-b border-gray-100">
+                                                    <td class="p-2 border-r text-gray-400">1</td>
+                                                    <td class="p-2 border-r text-gray-400">...</td>
+                                                    <td class="p-2 text-gray-400">...</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <section class="mb-12 border border-gray-200 rounded-lg overflow-hidden shadow-md bg-white">
+
+                    <div class="bg-gray-900 text-white p-4 flex justify-between items-center">
+                        <div class="flex items-center gap-2">
+                            <h3 class="font-bold text-lg">Práctica Acompañada: La Liga de Fútbol</h3>
+                        </div>
+                        <span
+                            class="text-xs bg-yellow-500 text-black px-3 py-1 rounded-full font-semibold tracking-wide">EN
+                            CLASE</span>
+                    </div>
+
+                    <div class="p-6 md:p-8 space-y-8">
+
+                        <div class="bg-gray-50 border-l-4 border-gray-800 p-5 rounded-r-lg">
+                            <p class="font-bold text-gray-800 mb-2">Vamos a modelar una liga de fútbol o voleibol
+                                pequeña.</p>
+                            <ol class="list-decimal list-inside space-y-2 text-sm text-gray-700">
+                                <li>Tenemos <strong>Equipos</strong>. De cada equipo queremos saber su Nombre y su Año
+                                    de Fundación.</li>
+                                <li>Tenemos <strong>Jugadores</strong>. Queremos saber su Nombre, Dorsal (número) y
+                                    Posición.</li>
+                                <li>Los Jugadores <strong>juegan</strong> en los Equipos.</li>
+                            </ol>
+                        </div>
+
+                        <div>
+                            <h4 class="text-cesde-primary font-bold text-lg mb-4 border-b border-gray-200 pb-2">Solución
+                                Paso a Paso</h4>
+
+                            <div class="space-y-4">
+                                <div class="flex flex-col md:flex-row gap-4 items-start">
+                                    <div
+                                        class="bg-blue-50 text-blue-800 px-4 py-2 rounded-lg text-sm font-bold md:w-1/3">
+                                        Pregunta:<br>
+                                        <span class="font-normal text-gray-600">¿Cuáles son los rectángulos?</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 mt-2 md:mt-0">
+                                        <span class="text-gray-400">➜</span>
+                                        <span class="shape-entity py-1 px-4 text-sm">EQUIPO</span>
+                                        <span class="shape-entity py-1 px-4 text-sm">JUGADOR</span>
+                                    </div>
+                                </div>
+
+                                <div class="flex flex-col md:flex-row gap-4 items-start">
+                                    <div
+                                        class="bg-blue-50 text-blue-800 px-4 py-2 rounded-lg text-sm font-bold md:w-1/3">
+                                        Pregunta:<br>
+                                        <span class="font-normal text-gray-600">¿Qué va en los óvalos de EQUIPO?</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 mt-2 md:mt-0 flex-wrap">
+                                        <span class="text-gray-400">➜</span>
+                                        <span class="shape-attribute px-3 py-1 text-xs">Nombre</span>
+                                        <span class="shape-attribute px-3 py-1 text-xs">AñoFundación</span>
+                                    </div>
+                                </div>
+
+                                <div class="flex flex-col md:flex-row gap-4 items-start">
+                                    <div
+                                        class="bg-blue-50 text-blue-800 px-4 py-2 rounded-lg text-sm font-bold md:w-1/3">
+                                        Pregunta<br>
+                                        <span class="font-normal text-gray-600">¿Cuál es el rombo?</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 mt-2 md:mt-0">
+                                        <span class="text-gray-400">➜</span>
+                                        <div
+                                            class="w-20 h-8 bg-gray-100 border border-black flex items-center justify-center text-xs font-bold transform -skew-x-12">
+                                            JUGAR
+                                        </div>
+                                        <span class="text-xs text-gray-500">(o PERTENECER)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 bg-yellow-50 border border-yellow-200 rounded-lg p-5 relative overflow-hidden">
+                            <div class="absolute top-0 right-0 p-4 opacity-10 text-yellow-600 text-6xl font-bold">?
+                            </div>
+                            <h5 class="font-bold text-yellow-800 text-lg mb-2">🧠 Reto Conceptual</h5>
+                            <p class="italic text-gray-800 font-medium mb-3">"¿Dónde anoto que Santiago juega en el Real
+                                Madrid?"</p>
+
+                            <div
+                                class="bg-white p-3 rounded border-l-4 border-cesde-primary text-sm text-gray-600 shadow-sm">
+                                En el diagrama conceptual solo decimos que <strong>EXISTE</strong> una relación.
+                                Aún no definimos <strong>CÓMO</strong> se anota técnicamente.
+                                <br>
+                                <span class="text-xs text-gray-500 mt-1 block">(Eso serán las Llaves Foráneas en el
+                                    futuro).</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <section class="mb-12 border-l-8 border-cesde-primary bg-white shadow-lg rounded-r-lg overflow-hidden">
+
+                    <div class="p-6 md:p-8">
+
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                            <div class="flex items-center gap-3">
+                                <h3 class="font-bold text-xl text-gray-800">Academia de Música
+                                </h3>
+                            </div>
+                            <span
+                                class="mt-2 md:mt-0 text-xs bg-cesde-primary text-white px-4 py-1.5 rounded-full font-bold uppercase tracking-wider shadow-sm">
+                                Refuerzo Independiente
+                            </span>
+                        </div>
+
+                        <div class="mb-6">
+                            <p class="text-lg text-gray-700 font-medium">Enunciado: <span
+                                    class="text-gray-600 font-normal">Modela una Academia de Música.</span></p>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-8">
+
+                            <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
+                                <h4 class="font-bold text-gray-800 mb-3 flex items-center">
+                                    <svg class="w-5 h-5 mr-2 text-cesde-primary" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01">
+                                        </path>
+                                    </svg>
+                                    Instrucciones
+                                </h4>
+                                <ul class="space-y-3 text-sm text-gray-700">
+                                    <li class="flex items-start">
+                                        <span class="text-cesde-primary font-bold mr-2">1.</span>
+                                        Identifica al menos <strong class="ml-1">2 Entidades principales</strong>.
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-cesde-primary font-bold mr-2">2.</span>
+                                        Asigna al menos <strong class="ml-1">2 atributos lógicos</strong> a cada una.
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-cesde-primary font-bold mr-2">3.</span>
+                                        Establece la <strong class="ml-1">relación</strong> entre ellas.
+                                    </li>
+                                </ul>
+
+                                <div
+                                    class="mt-6 bg-blue-50 text-blue-800 px-4 py-3 rounded text-sm border-l-4 border-blue-400">
+                                    <strong>💡 Pista:</strong> Piensa en <em>quién enseña</em> y <em>qué se enseña</em>.
+                                </div>
+                            </div>
+
+                            <div class="relative">
+                                <div class="absolute -left-4 top-0 bottom-0 w-px bg-gray-200 hidden md:block"></div>
+
+                                <h4 class="font-bold text-gray-800 mb-4 pl-0 md:pl-4">🧠 Pasos mentales a realizar:</h4>
+
+                                <ol class="relative border-l border-gray-200 ml-3 md:ml-7 space-y-6">
+                                    <li class="mb-2 ml-4">
+                                        <div
+                                            class="absolute w-3 h-3 bg-gray-200 rounded-full mt-1.5 -left-1.5 border border-white">
+                                        </div>
+                                        <h5 class="font-bold text-gray-800 text-sm">Paso 1: Detectar actores</h5>
+                                        <p class="text-sm text-gray-500 italic mt-1">¿Profesores? ¿Instrumentos?
+                                            ¿Clases? ¿Alumnos?</p>
+                                    </li>
+                                    <li class="mb-2 ml-4">
+                                        <div
+                                            class="absolute w-3 h-3 bg-gray-200 rounded-full mt-1.5 -left-1.5 border border-white">
+                                        </div>
+                                        <h5 class="font-bold text-gray-800 text-sm">Paso 2: Filtrar</h5>
+                                        <p class="text-sm text-gray-500 mt-1">Seleccionar los más obvios e importantes
+                                            para el sistema.</p>
+                                    </li>
+                                    <li class="ml-4">
+                                        <div
+                                            class="absolute w-3 h-3 bg-cesde-primary rounded-full mt-1.5 -left-1.5 border border-white">
+                                        </div>
+                                        <h5 class="font-bold text-gray-800 text-sm">Paso 3: Dibujar</h5>
+                                        <p class="text-sm text-gray-500 mt-1">Plasmar los rectángulos, óvalos y rombos
+                                            en papel o pantalla.</p>
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <section class="mb-12 bg-gray-50 p-6 rounded-lg border border-gray-200">
+                <h2 class="text-xl font-bold text-cesde-primary mb-4 border-b pb-2">Profundización: ¿Qué son las bases
+                    de datos NoSQL?
+                </h2>
+                <p class="text-sm text-gray-700 mb-4">
+                    Las bases de datos NoSQL, también conocidas como bases de datos personalizadas, están diseñadas para
+                    modelos de datos específicos y almacenan los datos en esquemas flexibles que se escalan con
+                    facilidad para aplicaciones modernas. Muchas cargas de trabajo de bases de datos pueden beneficiarse
+                    de la rentabilidad y el rendimiento de las bases de datos NoSQL. Por ejemplo, Amazon DynamoDB no
+                    tiene servidor, por lo que la utilización de los recursos se optimiza automáticamente y nunca tendrá
+                    que pagar por exceso de aprovisionamiento. Además, las bases de datos NoSQL son ampliamente
+                    reconocidas porque son fáciles de desarrollar.
+                </p>
+                <div class="border p-4 rounded hover:shadow-md transition">
+                    <h4 class="font-bold text-gray-800">¿Fuente?</h4>
+                    <a href="https://aws.amazon.com/es/nosql/" target="_blank"
+                        class="text-sm text-blue-600 hover:underline mt-1">https://aws.amazon.com/es/nosql/</a> <br>
+                    <a href="https://www.ibm.com/es-es/think/topics/nosql-databases" target="_blank"
+                        class="text-sm text-blue-600 hover:underline mt-1">https://www.ibm.com/es-es/think/topics/nosql-databases</a><br>
+                </div>
+
+                <h4 class="font-bold text-gray-800 mb-2 mt-6">Terminología SQL vs NoSQL</h4>
+                <div class="overflow-hidden rounded-lg border border-gray-300">
+                    <table class="min-w-full bg-white text-sm text-center">
+                        <thead class="bg-gray-200 text-gray-700">
+                            <tr>
+                                <th class="py-2 px-4">En SQL decimos...</th>
+                                <th class="py-2 px-4 font-bold text-cesde-primary">En NoSQL (MongoDB) es...</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            <tr>
+                                <td class="py-2">Tabla</td>
+                                <td class="py-2 font-medium">Conjunto (Collection)</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2">Fila</td>
+                                <td class="py-2 font-medium">Documento</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2">Columna</td>
+                                <td class="py-2 font-medium">Campo</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2">Clave principal</td>
+                                <td class="py-2 font-medium">ObjectId</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2">Tabla u objeto anidado</td>
+                                <td class="py-2 font-medium">Documento incrustado</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2">Índice</td>
+                                <td class="py-2 font-medium">Índice</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2">Ver</td>
+                                <td class="py-2 font-medium">Ver</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2">Matriz</td>
+                                <td class="py-2 font-medium">Matriz</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section
+                class="mb-12 mt-16 bg-gradient-to-br from-gray-50 to-white border-t-4 border-cesde-primary p-6 md:p-8 rounded-lg shadow-sm">
+
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                    ¿Debería saber algo más?
+                </h2>
+
+                <p class="text-gray-600 mb-8 text-lg">
+                    Hoy hemos visto un <em>mundo ideal</em> y conceptual. En las próximas sesiones la realidad se pondrá
+                    más interesante:
+                </p>
+
+                <div class="grid md:grid-cols-2 gap-6">
+
+                    <div
+                        class="flex items-start bg-white p-5 rounded-lg border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="bg-yellow-100 p-3 rounded-full mr-4 text-yellow-600">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z">
+                                </path>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-gray-700 text-sm mb-2">
+                                "A veces un atributo debe ser <strong>único</strong> (como el serial del computador)..."
+                            </p>
+                            <div class="flex items-center text-cesde-primary font-bold text-sm">
+                                <span class="mr-2">➜</span> Introducción a Llaves Primarias
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="flex items-start bg-white p-5 rounded-lg border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="bg-blue-100 p-3 rounded-full mr-4 text-blue-600">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-gray-700 text-sm mb-2">
+                                "Eventualmente tendremos que decirle al computador que 'Serial' es un
+                                <strong>número</strong> y
+                                'Marca' es <strong>texto</strong>..."
+                            </p>
+                            <div class="flex items-center text-cesde-primary font-bold text-sm">
+                                <span class="mr-2">➜</span> Introducción a Tipos de Dato
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+
+            <footer class="mt-16 pt-8 border-t border-gray-200 text-center text-sm text-gray-500">
+                <img src="src/logo.png" class="h-8 mx-auto mb-3 opacity-50 grayscale invert">
+                <p>Docente: <strong>Santiago Yosa González</strong></p>
+            </footer>
+        </div>
+    </main>
+
+    <script>
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const desktopToggleBtn = document.getElementById('desktop-toggle-btn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+
+        // Función para toggle en móvil (Overlay)
+        function toggleMobileMenu() {
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        }
+
+        // Función para toggle en escritorio (Espacio)
+        function toggleDesktopSidebar() {
+            // Simplemente movemos el sidebar fuera de la vista usando margen negativo
+            sidebar.classList.toggle('sidebar-closed');
+        }
+
+        mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+        overlay.addEventListener('click', toggleMobileMenu);
+        desktopToggleBtn.addEventListener('click', toggleDesktopSidebar);
+    </script>
+</body>
+
+</html>

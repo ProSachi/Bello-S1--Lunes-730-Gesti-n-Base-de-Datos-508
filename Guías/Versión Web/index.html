@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión BD</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="https://www.cesde.edu.co/wp-content/uploads/2022/11/cropped-favicon-32x32.png" sizes="32x32">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                    },
+                    colors: {
+                        cesde: {
+                            primary: '#D60057', // Magenta Institucional
+                            dark: '#1a1a1a',
+                            sidebar: '#000000',
+                            light: '#f3f4f6',
+                            accent: '#FFC107'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Transición suave para el sidebar */
+        #sidebar {
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Clase para ocultar sidebar en desktop */
+        .sidebar-closed {
+            margin-left: -18rem;
+            /* w-72 es 18rem */
+        }
+
+        /* Estilos gráficos MER */
+        .shape-entity {
+            border: 2px solid #D60057;
+            background-color: white;
+            padding: 10px 20px;
+            display: inline-block;
+            font-weight: bold;
+            border-radius: 2px;
+            box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1);
+        }
+
+        .shape-attribute {
+            border: 2px solid #4B5563;
+            background-color: white;
+            padding: 8px 15px;
+            border-radius: 50%;
+            display: inline-block;
+            font-size: 0.9em;
+        }
+
+        .shape-relation {
+            width: 80px;
+            height: 80px;
+            background-color: #f3f4f6;
+            border: 2px solid #1a1a1a;
+            transform: rotate(45deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+
+        .shape-relation span {
+            transform: rotate(-45deg);
+            font-weight: bold;
+            font-size: 0.8em;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-700 h-screen flex flex-col md:flex-row overflow-hidden">
+
+
+    <header class="md:hidden bg-black text-white p-4 flex justify-between items-center z-50 shadow-md">
+        <div class="font-bold tracking-wider text-lg">GESTIÓN DB</div>
+        <button id="mobile-menu-btn" class="focus:outline-none text-cesde-primary">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+            </svg>
+        </button>
+    </header>
+
+    <aside id="sidebar"
+        class="bg-cesde-sidebar text-gray-400 w-72 flex-shrink-0 fixed md:relative inset-y-0 left-0 transform -translate-x-full md:translate-x-0 z-40 border-r border-gray-800 flex flex-col h-full">
+
+        <div class="p-6 text-center border-b border-gray-800">
+            <img src="src/logo.png" alt="CESDE Logo"
+                class="w-32 mx-auto h-auto opacity-90 hover:opacity-100 transition-opacity">
+        </div>
+
+        <nav class="flex-1 overflow-y-auto py-4">
+            <ul class="space-y-1">
+                <li>
+                    <a href="index.html"
+                        class="block py-2 px-6 bg-gray-900 border-l-4 border-cesde-primary text-white font-medium text-sm">
+                        Recurso Global
+                    </a>
+                </li>
+                <li>
+                    <a href="semana2.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm">
+                        Semana 2: Fundamentos y MER
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 3: Normalización
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 4: Normalización
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 5: Lenguaje SQL
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 6: Entrega Momento 1
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 7: Constraint
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 8: Recuperación Datos
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 9: Recuperación Dato
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 10: Consultar Internas
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 11: Update - Delete
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 12: Entrega Momento 2
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 13: Procedimientos Almacenados
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 14: Procedimientos Almacenados
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 15: Power BI
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 16: Power BI
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 17: Entrega Momento 3
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 18: Retroalimentación Curso
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="p-4 border-t border-gray-800 text-xs text-center text-gray-600">
+            v1.1.0 - Gestión Base de Datos
+        </div>
+    </aside>
+
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden md:hidden"></div>
+
+
+    <main class="flex-1 overflow-y-auto w-full relative">
+
+        <div
+            class="sticky top-0 bg-white/90 backdrop-blur z-20 border-b border-gray-100 px-6 py-3 flex items-center justify-between">
+            <button id="desktop-toggle-btn"
+                class="hidden md:flex items-center text-gray-500 hover:text-cesde-primary transition-colors focus:outline-none"
+                title="Ocultar/Mostrar Menú">
+                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
+                    </path>
+                </svg>
+                <span class="text-xs font-bold uppercase tracking-wider">Menú</span>
+            </button>
+            <div class="text-xs text-gray-400">Docente: Santiago Yosa González</div>
+        </div>
+        <div class="max-w-4xl mx-auto p-6 md:p-10 pb-20">
+
+            <div class="border-b-4 border-cesde-primary inline-block mb-6">
+                <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-1">Gestión de Base de Datos</h1>
+            </div>
+
+            <p class="text-sm md:text-base text-gray-600">
+                Bienvenido al módulo de Gestión de Base de Datos en SQL Server. Esta plataforma es tu bitácora oficial.
+            </p>
+
+            <h3 class="text-xl font-bold text-cesde-primary mt-8 mb-4 border-b pb-2">Objetivo del Módulo</h3>
+            <ul class="list-disc list-inside space-y-2 text-gray-600 ml-2">
+                <p class="text-sm md:text-base text-gray-600">
+                    Dominar los fundamentos del diseñor de las Bases de Datos, que permita diseñar bases de datos
+                    garantizando la integridad, disponibilidad y calidad de los datos.
+                </p>
+            </ul>
+            <h3 class="text-xl font-bold text-cesde-primary mt-8 mb-4 border-b pb-2">Recursos Globales</h3>
+            <ul class="list-disc list-inside space-y-2 text-gray-600 ml-2">
+
+                <li><a href="https://platzi.com" target="_blank" class="text-blue-600 hover:underline">Plataforma
+                        Platzi</a> - Entrega del
+                    certificado de aprobación en semana 6</li>
+
+                <li><a href="https://platzi.com" target="_blank" class="text-blue-600 hover:underline">Plataforma
+                        Slang</a> - Revisión de 30 horas en la plataforma en semana 17 </li>
+                <li><a href="https://platzi.com" target="_blank" class="text-blue-600 hover:underline">Repositorio</a> -
+                    Documentación y ejercicios realizados en clase</li>
+            </ul>
+
+            <footer class="mt-16 pt-8 border-t border-gray-200 text-center text-sm text-gray-500">
+                <img src="src/logo.png" class="h-8 mx-auto mb-3 opacity-50 grayscale invert">
+                <p>Docente: <strong>Santiago Yosa González</strong></p>
+            </footer>
+
+        </div>
+    </main>
+
+    <script>
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const desktopToggleBtn = document.getElementById('desktop-toggle-btn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+
+        // Función para toggle en móvil (Overlay)
+        function toggleMobileMenu() {
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        }
+
+        // Función para toggle en escritorio (Espacio)
+        function toggleDesktopSidebar() {
+            // Simplemente movemos el sidebar fuera de la vista usando margen negativo
+            sidebar.classList.toggle('sidebar-closed');
+        }
+
+        mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+        overlay.addEventListener('click', toggleMobileMenu);
+        desktopToggleBtn.addEventListener('click', toggleDesktopSidebar);
+    </script>
+</body>
+
+</html>
