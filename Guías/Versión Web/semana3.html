@@ -1,0 +1,1876 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión BD</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="https://www.cesde.edu.co/wp-content/uploads/2022/11/cropped-favicon-32x32.png" sizes="32x32">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                    },
+                    colors: {
+                        cesde: {
+                            primary: '#D60057', // Magenta Institucional
+                            dark: '#1a1a1a',
+                            sidebar: '#000000',
+                            light: '#f3f4f6',
+                            accent: '#FFC107'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Transición suave para el sidebar */
+        #sidebar {
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Clase para ocultar sidebar en desktop */
+        .sidebar-closed {
+            margin-left: -18rem;
+            /* w-72 es 18rem */
+        }
+
+        /* Estilos gráficos MER */
+        .shape-entity {
+            border: 2px solid #D60057;
+            background-color: white;
+            padding: 10px 20px;
+            display: inline-block;
+            font-weight: bold;
+            border-radius: 2px;
+            box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1);
+        }
+
+        .shape-attribute {
+            border: 2px solid #4B5563;
+            background-color: white;
+            padding: 8px 15px;
+            border-radius: 50%;
+            display: inline-block;
+            font-size: 0.9em;
+        }
+
+        .shape-relation {
+            width: 80px;
+            height: 80px;
+            background-color: #f3f4f6;
+            border: 2px solid #1a1a1a;
+            transform: rotate(45deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+
+        .shape-relation span {
+            transform: rotate(-45deg);
+            font-weight: bold;
+            font-size: 0.8em;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-700 h-screen flex flex-col md:flex-row overflow-hidden">
+
+
+    <header class="md:hidden bg-black text-white p-4 flex justify-between items-center z-50 shadow-md">
+        <div class="font-bold tracking-wider text-lg">GESTIÓN DB</div>
+        <button id="mobile-menu-btn" class="focus:outline-none text-cesde-primary">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+            </svg>
+        </button>
+    </header>
+
+    <aside id="sidebar"
+        class="bg-cesde-sidebar text-gray-400 w-72 flex-shrink-0 fixed md:relative inset-y-0 left-0 transform -translate-x-full md:translate-x-0 z-40 border-r border-gray-800 flex flex-col h-full">
+
+        <div class="p-6 text-center border-b border-gray-800">
+            <img src="src/logo.png" alt="CESDE Logo"
+                class="w-32 mx-auto h-auto opacity-90 hover:opacity-100 transition-opacity">
+        </div>
+
+        <nav class="flex-1 overflow-y-auto py-4">
+            <ul class="space-y-1">
+                <li>
+                    <a href="index.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm">
+                        Recurso Global
+                    </a>
+                </li>
+                <li>
+                    <a href="semana2.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm">
+                        Semana 2: Fundamentos BD
+                    </a>
+                </li>
+                <li>
+                    <a href="semana3.html"
+                        class="block py-2 px-6 bg-gray-900 border-l-4 border-cesde-primary text-white font-medium text-sm">
+                        Semana 3: Normalización
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 4: Normalización
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 5: Lenguaje SQL
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 6: Entrega Momento 1
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 7: Constraint
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 8: Recuperación Datos
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 9: Recuperación Dato
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 10: Consultar Internas
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 11: Update - Delete
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 12: Entrega Momento 2
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 13: Procedimientos Almacenados
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 14: Procedimientos Almacenados
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 15: Power BI
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 16: Power BI
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 17: Entrega Momento 3
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 18: Retroalimentación Curso
+                    </a>
+                </li>
+            </ul>
+            </ul>
+        </nav>
+
+        <div class="p-4 border-t border-gray-800 text-xs text-center text-gray-600">
+            v1.1.0 - Gestión Base de Datos
+        </div>
+    </aside>
+
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden md:hidden"></div>
+
+    <main class="flex-1 overflow-y-auto w-full relative bg-white">
+
+        <div
+            class="sticky top-0 bg-white/90 backdrop-blur z-20 border-b border-gray-100 px-6 py-3 flex items-center justify-between">
+            <button id="desktop-toggle-btn"
+                class="hidden md:flex items-center text-gray-500 hover:text-cesde-primary transition-colors focus:outline-none"
+                title="Ocultar/Mostrar Menú">
+                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
+                    </path>
+                </svg>
+                <span class="text-xs font-bold uppercase tracking-wider">Menú</span>
+            </button>
+            <div class="text-xs text-gray-400">Gestión Base de Datos</div>
+        </div>
+
+        <div class="max-w-6xl mx-auto p-6 md:p-10 pb-20">
+
+            <div class="border-b-4 border-cesde-primary inline-block mb-8">
+                <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-1">Normalización de Bases de Datos</h1>
+                <span class="text-sm text-gray-500 font-medium uppercase tracking-wide">Unidad I: Diseño de bases de
+                    datos - Semana 3</span>
+            </div>
+
+            <section class="mb-12">
+                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-r-lg shadow-sm">
+                    <h2 class="text-xl font-bold text-gray-800 mb-3 flex items-center">
+                        Situación: La Ferretería
+                    </h2>
+                    <p class="text-gray-700 mb-4">
+                        Imagina que trabajas en una ferretería y el sistema actual guarda las ventas en una sola "Súper
+                        Tabla" de Excel o SQL llamada RegistroVentas:
+                    </p>
+                    <div
+                        class="bg-white p-4 rounded border border-gray-200 font-mono text-sm text-gray-600 mb-4 overflow-x-auto">
+                        <table class="min-w-full text-xs">
+                            <tr>
+                                <td class="px-2 py-1">ID_Venta</td>
+                                <td class="px-2 py-1">Cliente</td>
+                                <td class="px-2 py-1">Dirección_Cliente</td>
+                                <td class="px-2 py-1">Productos_Comprados</td>
+                                <td class="px-2 py-1">Total</td>
+                                <td class="px-2 py-1">Vendedor</td>
+                                <td class="px-2 py-1">Sucursal_Vendedor</td>
+                            </tr>
+                            <tr class="bg-gray-50">
+                                <td class="px-2 py-1">101</td>
+                                <td class="px-2 py-1">Juan Pérez</td>
+                                <td class="px-2 py-1">Calle 123</td>
+                                <td class="px-2 py-1">Martillo, Clavos (50), Sierra</td>
+                                <td class="px-2 py-1">50000</td>
+                                <td class="px-2 py-1">Ana López</td>
+                                <td class="px-2 py-1">Centro</td>
+                            </tr>
+                            <tr>
+                                <td class="px-2 py-1">102</td>
+                                <td class="px-2 py-1">Juan Pérez</td>
+                                <td class="px-2 py-1">Calle 123</td>
+                                <td class="px-2 py-1">Taladro</td>
+                                <td class="px-2 py-1">80000</td>
+                                <td class="px-2 py-1">Carlos Ruiz</td>
+                                <td class="px-2 py-1">Norte</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-cesde-primary text-sm uppercase mb-2">El Problema:</h3>
+                        <ul class="list-disc list-inside text-gray-700 space-y-2">
+                            <li><strong>Redundancia de Datos:</strong> "Ana López" y "Centro" se repiten. Si Ana se muda
+                                a la sucursal Sur, ¿tienes que actualizar 1,000 filas antiguas? (Anomalía de
+                                Actualización).</li>
+                            <li><strong>Atomicidad Violada:</strong> En Productos_Comprados tenemos una lista separada
+                                por comas. ¿Cómo haces una consulta SQL para saber cuántos martillos se vendieron? Es
+                                imposible/ineficiente con esa celda sucia.</li>
+                            <li><strong>Inconsistencia:</strong> Si escribes "Calle 123" en una fila y "Cll 123" en
+                                otra, para la base de datos son dos direcciones distintas.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mb-12">
+                <h2 class="text-xl font-bold text-cesde-primary mb-4 border-b pb-2">¿Qué es la Normalización?</h2>
+
+                <div class="grid md:grid-cols-1 gap-6 mb-8">
+                    <div class="bg-gray-50 p-5 rounded-lg border-t-4 border-cesde-primary">
+                        <h3 class="font-bold text-lg mb-2">Definición</h3>
+                        <p class="text-gray-600 text-sm">La normalización es un proceso utilizado para organizar los
+                            datos en una base de datos. Su objetivo es minimizar la redundancia (datos duplicados) y
+                            mejorar la integridad de los datos.</p>
+                        <br>
+                        <p class="text-gray-600 text-sm">Es un proceso de optimización que busca reducir redundancias y
+                            anomalías dividiendo tablas grandes en estructuras más pequeñas y relacionadas, manteniendo
+                            las relaciones entre los datos.</p>
+                        <div class="mt-4 pt-4 border-t border-gray-300">
+                            <h4 class="font-bold text-cesde-primary text-sm uppercase">Fuente para profundizar </h4>
+                            <a href="https://learn.microsoft.com/es-es/office/troubleshoot/access/database-normalization-description"
+                                target="_blank"
+                                class="text-sm text-blue-600 hover:underline mt-1 inline-block">Fundamentos de la
+                                normalización de bases de datos</a>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 border-l-4 border-blue-400 p-6 rounded-r-lg">
+                        <h3 class="font-bold text-gray-800 mb-3">Beneficios de la Normalización:</h3>
+                        <ul class="list-disc list-inside text-gray-700 space-y-1 text-sm">
+                            <li>Evita la duplicidad de información.</li>
+                            <li>Facilita el mantenimiento de los datos.</li>
+                            <li>Aumenta la consistencia y precisión.</li>
+                            <li>Mejora el rendimiento en algunas consultas.</li>
+                        </ul>
+                    </div>
+                    <h2 class="text-xl font-bold text-cesde-primary mb-4 border-b pb-2">Términos a tener en cuenta.</h2>
+                    <div class="bg-green-50 border-l-4 border-green-500 p-6 rounded-r-lg mt-4">
+                        <h3 class="font-bold text-gray-800 mb-3">Integridad de los datos</h3>
+                        <p class="text-gray-700 text-sm">Imagina una base de datos que contiene información sobre los
+                            clientes. Sin normalización, si un cliente cambia de edad, tendríamos que actualizarla en
+                            varios sitios, lo que aumentaría el riesgo de incoherencias. Al normalizar los datos,
+                            podemos tener tablas separadas vinculadas por un identificador único que garantizará que los
+                            datos sigan siendo precisos y coherentes.</p>
+                    </div>
+
+                    <div class="bg-indigo-50 border-l-4 border-indigo-400 p-6 rounded-r-lg mt-6">
+                        <h3 class="font-bold text-gray-800 mb-3">Consulta de eficacia</h3>
+                        <p class="text-gray-700 text-sm">Consideremos una base de datos compleja con múltiples tablas
+                            relacionadas que almacena información redundante. En este escenario, las consultas que
+                            implican uniones se vuelven más complicadas y consumen más recursos. La normalización
+                            ayudará a simplificar las consultas al dividir los datos en tablas más pequeñas, en las que
+                            cada tabla contendrá sólo la información relevante, reduciendo así la necesidad de complejas
+                            uniones.</p>
+                    </div>
+
+                    <div class="bg-orange-50 border-l-4 border-orange-400 p-6 rounded-r-lg mt-6">
+                        <h3 class="font-bold text-gray-800 mb-3">Optimización del almacenamiento</h3>
+                        <p class="text-gray-700 text-sm">Un problema importante de los datos redundantes es que ocupan
+                            espacio de almacenamiento innecesario. Por ejemplo, si almacenamos los mismos detalles del
+                            producto en cada registro de pedido, se produce una duplicación. Con la normalización,
+                            puedes eliminar la redundancia dividiendo los datos en tablas separadas.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mb-12">
+                <h2 class="text-xl font-bold text-cesde-primary mb-4 border-b pb-2">Requisitos de la Normalización</h2>
+                <div class="bg-gray-50 p-5 rounded-lg border-l-4 border-gray-800">
+                    <p class="text-gray-700 text-sm mb-3">Para que las tablas de nuestra BD estén normalizadas deben
+                        cumplir las siguientes reglas:</p>
+                    <ul class="list-disc list-inside text-gray-700 space-y-1 text-sm">
+                        <li>Cada tabla debe tener su nombre único.</li>
+                        <li>No puede haber dos filas iguales.</li>
+                        <li>No se permiten los duplicados.</li>
+                        <li>Todos los datos en una columna deben ser del mismo tipo.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="mb-12">
+                <h2 class="text-xl font-bold text-cesde-primary mb-4 border-b pb-2">Primera Forma Normal (1FN) -
+                    Atomicidad</h2>
+
+                <div class="bg-green-50 border-l-4 border-green-500 p-6 rounded-r-lg mb-6">
+                    <h3 class="font-bold text-gray-800 mb-3">Requisitos de 1FN:</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-1 text-sm">
+                        <li>Cada celda de la tabla debe contener un valor único y atómico (indivisible).</li>
+                        <li>No puede haber grupos repetidos (listas) en una columna.</li>
+                        <li>Debe existir una Llave Primaria (PK).</li>
+                        <li>Cada columna debe tener un solo tipo de dato.</li>
+                    </ul>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="font-bold text-gray-800 mb-2">Tabla Inicial (No Normalizada) - Sistema de Pedidos de una
+                        Tienda:</h3>
+                    <div class="overflow-x-auto shadow-lg rounded-lg border border-gray-200">
+                        <table class="min-w-full bg-white text-sm text-left">
+                            <thead class="bg-gray-900 text-white">
+                                <tr>
+                                    <th class="py-2 px-3 font-semibold uppercase text-xs">Factura</th>
+                                    <th class="py-2 px-3 font-semibold uppercase text-xs">Fecha</th>
+                                    <th class="py-2 px-3 font-semibold uppercase text-xs">Cliente</th>
+                                    <th class="py-2 px-3 font-semibold uppercase text-xs">Dirección</th>
+                                    <th class="py-2 px-3 font-semibold uppercase text-xs">Productos</th>
+                                    <th class="py-2 px-3 font-semibold uppercase text-xs">Vendedor</th>
+                                    <th class="py-2 px-3 font-semibold uppercase text-xs">Zona_Vendedor</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr>
+                                    <td class="py-2 px-3">F001</td>
+                                    <td class="py-2 px-3">01/02</td>
+                                    <td class="py-2 px-3">Juan Pérez</td>
+                                    <td class="py-2 px-3">Cl 10 #20</td>
+                                    <td class="py-2 px-3">Leche, Pan, Huevos</td>
+                                    <td class="py-2 px-3">Ana</td>
+                                    <td class="py-2 px-3">Norte</td>
+                                </tr>
+                                <tr class="bg-gray-50">
+                                    <td class="py-2 px-3">F002</td>
+                                    <td class="py-2 px-3">01/02</td>
+                                    <td class="py-2 px-3">María Gil</td>
+                                    <td class="py-2 px-3">Cr 5 #80</td>
+                                    <td class="py-2 px-3">Leche</td>
+                                    <td class="py-2 px-3">Ana</td>
+                                    <td class="py-2 px-3">Norte</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 px-3">F003</td>
+                                    <td class="py-2 px-3">02/02</td>
+                                    <td class="py-2 px-3">Juan Pérez</td>
+                                    <td class="py-2 px-3">Calle 10 Num 20</td>
+                                    <td class="py-2 px-3">Arroz, Pan</td>
+                                    <td class="py-2 px-3">Carlos</td>
+                                    <td class="py-2 px-3">Sur</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="bg-red-50 border-l-4 border-red-400 p-6 rounded-r-lg mb-6">
+                    <h3 class="font-bold text-gray-800 mb-3">¿Qué errores lógicos encontramos?</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2 text-sm">
+                        <li><strong>La Celda "Sucia":</strong> En la fila 1, columna "Productos", hay tres cosas a la
+                            vez. <br> ¿Si quiero saber cuánto Pan vendí en total, cómo sumo esa celda?</li>
+                        <li><strong>La Inconsistencia:</strong> Juan Pérez aparece dos veces. En la primera dice "Cl 10"
+                            y en la segunda "Calle 10". <br> Para nosotros es lo mismo, pero para una máquina son dos
+                            direcciones distintas.</li>
+                        <li><strong>La Redundancia:</strong> "Ana" siempre es del "Norte". <br> Si Ana se cambia de
+                            zona, ¿tengo que buscar las 5,000 facturas viejas de Ana y cambiarlas una por una?</li>
+                    </ul>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="font-bold text-gray-800 mb-2">La Transformación - Aplicando 1FN:</h3>
+                    <p class="text-gray-600 text-sm mb-3">Para arreglar la tabla, debemos "explotar" la lista de
+                        productos. Si Juan compró 3 cosas, Juan tendrá 3 filas:</p>
+                    <div class="overflow-x-auto shadow-lg rounded-lg border border-gray-200">
+                        <table class="min-w-full bg-white text-sm text-left">
+                            <thead class="bg-gray-800 text-white">
+                                <tr>
+                                    <th class="py-2 px-3 font-semibold uppercase text-xs">Factura</th>
+                                    <th class="py-2 px-3 font-semibold uppercase text-xs">Fecha</th>
+                                    <th class="py-2 px-3 font-semibold uppercase text-xs">Cliente</th>
+                                    <th class="py-2 px-3 font-semibold uppercase text-xs">Dirección</th>
+                                    <th class="py-2 px-3 font-semibold uppercase text-xs">Producto</th>
+                                    <th class="py-2 px-3 font-semibold uppercase text-xs">Vendedor</th>
+                                    <th class="py-2 px-3 font-semibold uppercase text-xs">Zona_Vendedor</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr>
+                                    <td class="py-2 px-3">F001</td>
+                                    <td class="py-2 px-3">01/02</td>
+                                    <td class="py-2 px-3">Juan Pérez</td>
+                                    <td class="py-2 px-3">Cl 10 #20</td>
+                                    <td class="py-2 px-3">Pan</td>
+                                    <td class="py-2 px-3">Ana</td>
+                                    <td class="py-2 px-3">Norte</td>
+                                </tr>
+                                <tr class="bg-gray-50">
+                                    <td class="py-2 px-3">F001</td>
+                                    <td class="py-2 px-3">01/02</td>
+                                    <td class="py-2 px-3">Juan Pérez</td>
+                                    <td class="py-2 px-3">Cl 10 #20</td>
+                                    <td class="py-2 px-3">Leche</td>
+                                    <td class="py-2 px-3">Ana</td>
+                                    <td class="py-2 px-3">Norte</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 px-3">F001</td>
+                                    <td class="py-2 px-3">01/02</td>
+                                    <td class="py-2 px-3">Juan Pérez</td>
+                                    <td class="py-2 px-3">Cl 10 #20</td>
+                                    <td class="py-2 px-3">Huevos</td>
+                                    <td class="py-2 px-3">Ana</td>
+                                    <td class="py-2 px-3">Norte</td>
+                                </tr>
+                                <tr class="bg-gray-50">
+                                    <td class="py-2 px-3">F002</td>
+                                    <td class="py-2 px-3">01/02</td>
+                                    <td class="py-2 px-3">María Gil</td>
+                                    <td class="py-2 px-3">Cr 5 #80</td>
+                                    <td class="py-2 px-3">Leche</td>
+                                    <td class="py-2 px-3">Ana</td>
+                                    <td class="py-2 px-3">Norte</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 px-3">F003</td>
+                                    <td class="py-2 px-3">02/02</td>
+                                    <td class="py-2 px-3">Juan Pérez</td>
+                                    <td class="py-2 px-3">Calle 10 Num 20</td>
+                                    <td class="py-2 px-3">Arroz</td>
+                                    <td class="py-2 px-3">Carlos</td>
+                                    <td class="py-2 px-3">Sur</td>
+                                </tr>
+                                <tr class="bg-gray-50">
+                                    <td class="py-2 px-3">F003</td>
+                                    <td class="py-2 px-3">02/02</td>
+                                    <td class="py-2 px-3">Juan Pérez</td>
+                                    <td class="py-2 px-3">Calle 10 Num 20</td>
+                                    <td class="py-2 px-3">Pan</td>
+                                    <td class="py-2 px-3">Carlos</td>
+                                    <td class="py-2 px-3">Sur</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-gray-600 text-sm mt-3"><strong>Llave Compuesta:</strong> Ahora "Factura" (F001) no es
+                        única, se repite 3 veces. Para identificar una fila única necesitamos la combinación Factura +
+                        Producto.</p>
+                </div>
+            </section>
+
+            <section class="mb-12">
+                <h2 class="text-xl font-bold text-cesde-primary mb-4 border-b pb-2">Segunda Forma Normal (2FN) -
+                    Dependencias Parciales</h2>
+
+                <div class="bg-blue-50 border-l-4 border-blue-400 p-6 rounded-r-lg mb-6">
+                    <h3 class="font-bold text-gray-800 mb-3">Requisitos de 2FN:</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-1 text-sm">
+                        <li>Debe estar en 1FN.</li>
+                        <li>Elimina dependencias parciales: ningún campo no clave debe depender solo de una parte de la
+                            clave primaria compuesta.</li>
+                        <li>Todo atributo debe hablar de la <strong>Llave Completa</strong>. Si una columna solo
+                            describe a una parte de la llave, debe irse a otra tabla.</li>
+                    </ul>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="font-bold text-gray-800 mb-2">Análisis de Dependencias (Llave: Factura + Producto):</h3>
+                    <div class="bg-gray-50 p-4 rounded border-l-4 border-gray-800">
+                        <p class="text-sm text-gray-700 mb-2"><strong>Columna Cantidad:</strong> ¿Depende de la Factura
+                            y el Producto? <span class="font-bold text-green-600">SÍ</span> → SE QUEDA - Es cuánta leche
+                            llevé en esa factura</p>
+                        <p class="text-sm text-gray-700"><strong>Columna Cliente/Fecha/Vendedor:</strong> ¿El nombre del
+                            cliente depende del Producto? <span class="font-bold text-red-600">NO</span> → SE VAN a otra
+                            tabla - El cliente es dueño de la Factura, sin importar qué producto lleve</p>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="font-bold text-gray-800 mb-3">La Transformación - Separamos en dos tablas:</h3>
+
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-white border-2 border-cesde-primary rounded-lg p-4">
+                            <h4 class="font-bold text-cesde-primary mb-2">Tabla 1: DETALLE (Lo que pasó)</h4>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full bg-gray-50 text-xs">
+                                    <thead class="bg-gray-800 text-white">
+                                        <tr>
+                                            <th class="py-1 px-2">Factura</th>
+                                            <th class="py-1 px-2">Producto</th>
+                                            <th class="py-1 px-2">Cantidad</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200">
+                                        <tr>
+                                            <td class="py-1 px-2">F001</td>
+                                            <td class="py-1 px-2">Leche</td>
+                                            <td class="py-1 px-2">1</td>
+                                        </tr>
+                                        <tr class="bg-white">
+                                            <td class="py-1 px-2">F001</td>
+                                            <td class="py-1 px-2">Pan</td>
+                                            <td class="py-1 px-2">1</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="bg-white border-2 border-cesde-primary rounded-lg p-4">
+                            <h4 class="font-bold text-cesde-primary mb-2">Tabla 2: ENCABEZADO (Quién y Cuándo)</h4>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full bg-gray-50 text-xs">
+                                    <thead class="bg-gray-800 text-white">
+                                        <tr>
+                                            <th class="py-1 px-2">Factura</th>
+                                            <th class="py-1 px-2">Cliente</th>
+                                            <th class="py-1 px-2">Fecha</th>
+                                            <th class="py-1 px-2">Vendedor</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200">
+                                        <tr>
+                                            <td class="py-1 px-2">F001</td>
+                                            <td class="py-1 px-2">Juan</td>
+                                            <td class="py-1 px-2">01/02</td>
+                                            <td class="py-1 px-2">Ana</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mb-12">
+                <h2 class="text-xl font-bold text-cesde-primary mb-4 border-b pb-2">Tercera Forma Normal (3FN) -
+                    Dependencias Transitivas</h2>
+
+                <div class="bg-purple-50 border-l-4 border-purple-400 p-6 rounded-r-lg mb-6">
+                    <h3 class="font-bold text-gray-800 mb-3">Requisitos de 3FN:</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-1 text-sm">
+                        <li>Debe estar en 2FN.</li>
+                        <li>Elimina <strong>dependencias transitivas:</strong> El atributo debe depender de la llave,
+                            toda la llave y nada más que la llave.</li>
+                        <li>(A depende de B, y B depende de C)</li>
+                    </ul>
+                </div>
+
+                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-r-lg mb-6">
+                    <h3 class="font-bold text-gray-800 mb-2">Problema Identificado:</h3>
+                    <p class="text-sm text-gray-700 mb-3">Mirando la Tabla 2 (Encabezado), la llave es Factura.</p>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2 text-sm">
+                        <li><strong>Vendedor</strong> depende de la Factura (quién la atendió) → <span
+                                class="text-green-600">SE QUEDA</span></li>
+                        <li><strong>Zona_Vendedor:</strong> ¿Depende de la Factura? NO. Depende de Ana. Ana trabaja en
+                            el Norte siempre → <span class="text-red-600">DEPENDENCIA TRANSITIVA</span></li>
+                    </ul>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="font-bold text-gray-800 mb-3">La Transformación - Sacamos a los vendedores:</h3>
+
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="bg-white border-2 border-cesde-primary rounded-lg p-4">
+                            <h4 class="font-bold text-cesde-primary text-center mb-2">Tabla 3: VENDEDORES</h4>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full bg-gray-50 text-xs">
+                                    <thead class="bg-gray-800 text-white">
+                                        <tr>
+                                            <th class="py-1 px-2">Vendedor</th>
+                                            <th class="py-1 px-2">Zona</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200">
+                                        <tr>
+                                            <td class="py-1 px-2">Ana</td>
+                                            <td class="py-1 px-2">Norte</td>
+                                        </tr>
+                                        <tr class="bg-white">
+                                            <td class="py-1 px-2">Carlos</td>
+                                            <td class="py-1 px-2">Sur</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="bg-white border-2 border-cesde-primary rounded-lg p-4 md:col-span-2">
+                            <h4 class="font-bold text-cesde-primary text-center mb-2">Tabla 2 (Refinada): ENCABEZADO
+                            </h4>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full bg-gray-50 text-xs">
+                                    <thead class="bg-gray-800 text-white">
+                                        <tr>
+                                            <th class="py-1 px-2">Factura</th>
+                                            <th class="py-1 px-2">Cliente</th>
+                                            <th class="py-1 px-2">Fecha</th>
+                                            <th class="py-1 px-2">Vendedor_ID</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200">
+                                        <tr>
+                                            <td class="py-1 px-2">F001</td>
+                                            <td class="py-1 px-2">Juan</td>
+                                            <td class="py-1 px-2">01/02</td>
+                                            <td class="py-1 px-2">Ana</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="text-gray-600 text-sm mt-4 italic">
+                        <strong>Ventaja:</strong> Si Ana se cambia de zona, solo modificamos una celda en la Tabla 3, y
+                        automáticamente todas las facturas quedan actualizadas.
+                    </p>
+                </div>
+            </section>
+
+            <section class="mb-12">
+                <h2 class="text-xl font-bold text-cesde-primary mb-4 border-b pb-2">Otro Ejemplo de Normalización</h2>
+
+                <div class="mb-8">
+                    <h3 class="text-lg font-bold text-gray-800 mb-3">Primera Forma Normal (1NF)</h3>
+                    <p class="text-gray-700 text-sm mb-4">Este nivel de normalización garantiza que cada columna de tus
+                        datos contenga sólo valores atómicos.</p>
+
+                    <div class="bg-green-50 border-l-4 border-green-500 p-6 rounded-r-lg mb-6">
+                        <h4 class="font-bold text-gray-800 mb-3">Requisitos:</h4>
+                        <ul class="list-disc list-inside text-gray-700 space-y-1 text-sm">
+                            <li>Eliminar grupos repetitivos.</li>
+                            <li>Tener valores atómicos (no listas ni conjuntos en una sola celda).</li>
+                            <li>Cada columna debe tener un solo tipo de dato.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mb-8">
+                    <h3 class="font-bold text-gray-800 mb-3">Tabla Inicial (Sin Normalizar):</h3>
+                    <div class="overflow-x-auto shadow-lg rounded-lg border border-gray-200">
+                        <table class="min-w-full bg-white text-xs">
+                            <thead class="bg-gray-900 text-white">
+                                <tr>
+                                    <th class="py-2 px-2 font-semibold">Cliente</th>
+                                    <th class="py-2 px-2 font-semibold">Nombre Cliente</th>
+                                    <th class="py-2 px-2 font-semibold">Tel</th>
+                                    <th class="py-2 px-2 font-semibold">Productos</th>
+                                    <th class="py-2 px-2 font-semibold">Cantidades</th>
+                                    <th class="py-2 px-2 font-semibold">Precios Unitarios</th>
+                                    <th class="py-2 px-2 font-semibold">Fecha Pedido</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr>
+                                    <td class="py-2 px-2">1</td>
+                                    <td class="py-2 px-2">Ana Pérez</td>
+                                    <td class="py-2 px-2">3114567890</td>
+                                    <td class="py-2 px-2">Teclado, Mouse</td>
+                                    <td class="py-2 px-2">1, 2</td>
+                                    <td class="py-2 px-2">100000, 50000</td>
+                                    <td class="py-2 px-2">2024-05-10</td>
+                                </tr>
+                                <tr class="bg-gray-50">
+                                    <td class="py-2 px-2">2</td>
+                                    <td class="py-2 px-2">Luis Gómez</td>
+                                    <td class="py-2 px-2">3001234567</td>
+                                    <td class="py-2 px-2">Monitor</td>
+                                    <td class="py-2 px-2">1</td>
+                                    <td class="py-2 px-2">600000</td>
+                                    <td class="py-2 px-2">2024-05-11</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 px-2">1</td>
+                                    <td class="py-2 px-2">Ana Pérez</td>
+                                    <td class="py-2 px-2">3114567890</td>
+                                    <td class="py-2 px-2">Teclado, Webcam</td>
+                                    <td class="py-2 px-2">1, 1</td>
+                                    <td class="py-2 px-2">100000, 150000</td>
+                                    <td class="py-2 px-2">2024-05-12</td>
+                                </tr>
+                                <tr class="bg-gray-50">
+                                    <td class="py-2 px-2">3</td>
+                                    <td class="py-2 px-2">Carlos Ríos</td>
+                                    <td class="py-2 px-2">3129876543</td>
+                                    <td class="py-2 px-2">Monitor, Mouse, Teclado</td>
+                                    <td class="py-2 px-2">1, 1, 1</td>
+                                    <td class="py-2 px-2">600000, 50000, 100000</td>
+                                    <td class="py-2 px-2">2024-05-13</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="bg-red-50 border-l-4 border-red-400 p-6 rounded-r-lg mb-8">
+                    <h3 class="font-bold text-gray-800 mb-3">Situaciones a resolver:</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2 text-sm">
+                        <li><strong>No existe un dato único</strong> que identifique cada una de las filas, una llave
+                            primaria.</li>
+                        <li><strong>Campos multivaluados:</strong>
+                        <li>El campo "Productos" tiene más de un valor en la misma celda (ej. "Teclado, Mouse").</li>
+                        <li>Lo mismo ocurre con "Cantidades" y "PreciosUnitarios".</li>
+
+                    </ul>
+                </div>
+
+                <div class="mb-8">
+                    <h3 class="font-bold text-gray-800 mb-3">Solucionando y Aplicando 1FN:</h3>
+                    <p class="text-gray-600 text-sm mb-3">Convertimos a tabla plana donde cada fila tiene un único
+                        producto:</p>
+                    <div class="overflow-x-auto shadow-lg rounded-lg border border-gray-200">
+                        <table class="min-w-full bg-white text-xs">
+                            <thead class="bg-gray-900 text-white">
+                                <tr>
+                                    <th class="py-2 px-2 font-semibold">PedidoID</th>
+                                    <th class="py-2 px-2 font-semibold">Cliente Nombre</th>
+                                    <th class="py-2 px-2 font-semibold">Cliente Tel</th>
+                                    <th class="py-2 px-2 font-semibold">Producto</th>
+                                    <th class="py-2 px-2 font-semibold">Cantidad</th>
+                                    <th class="py-2 px-2 font-semibold">Precio Unitario</th>
+                                    <th class="py-2 px-2 font-semibold">Fecha Pedido</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr>
+                                    <td class="py-2 px-2">1</td>
+                                    <td class="py-2 px-2">Ana Pérez</td>
+                                    <td class="py-2 px-2">3114567890</td>
+                                    <td class="py-2 px-2">Teclado</td>
+                                    <td class="py-2 px-2">1</td>
+                                    <td class="py-2 px-2">100000</td>
+                                    <td class="py-2 px-2">2024-05-10</td>
+                                </tr>
+                                <tr class="bg-gray-50">
+                                    <td class="py-2 px-2">1</td>
+                                    <td class="py-2 px-2">Ana Pérez</td>
+                                    <td class="py-2 px-2">3114567890</td>
+                                    <td class="py-2 px-2">Mouse</td>
+                                    <td class="py-2 px-2">2</td>
+                                    <td class="py-2 px-2">50000</td>
+                                    <td class="py-2 px-2">2024-05-10</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 px-2">2</td>
+                                    <td class="py-2 px-2">Luis Gómez</td>
+                                    <td class="py-2 px-2">3001234567</td>
+                                    <td class="py-2 px-2">Monitor</td>
+                                    <td class="py-2 px-2">1</td>
+                                    <td class="py-2 px-2">600000</td>
+                                    <td class="py-2 px-2">2024-05-11</td>
+                                </tr>
+                                <tr class="bg-gray-50">
+                                    <td class="py-2 px-2">3</td>
+                                    <td class="py-2 px-2">Ana Pérez</td>
+                                    <td class="py-2 px-2">3114567890</td>
+                                    <td class="py-2 px-2">Teclado</td>
+                                    <td class="py-2 px-2">1</td>
+                                    <td class="py-2 px-2">100000</td>
+                                    <td class="py-2 px-2">2024-05-12</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 px-2">3</td>
+                                    <td class="py-2 px-2">Ana Pérez</td>
+                                    <td class="py-2 px-2">3114567890</td>
+                                    <td class="py-2 px-2">Webcam</td>
+                                    <td class="py-2 px-2">1</td>
+                                    <td class="py-2 px-2">150000</td>
+                                    <td class="py-2 px-2">2024-05-12</td>
+                                </tr>
+                                <tr class="bg-gray-50">
+                                    <td class="py-2 px-2">4</td>
+                                    <td class="py-2 px-2">Carlos Ríos</td>
+                                    <td class="py-2 px-2">3129876543</td>
+                                    <td class="py-2 px-2">Monitor</td>
+                                    <td class="py-2 px-2">1</td>
+                                    <td class="py-2 px-2">600000</td>
+                                    <td class="py-2 px-2">2024-05-13</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 px-2">4</td>
+                                    <td class="py-2 px-2">Carlos Ríos</td>
+                                    <td class="py-2 px-2">3129876543</td>
+                                    <td class="py-2 px-2">Mouse</td>
+                                    <td class="py-2 px-2">1</td>
+                                    <td class="py-2 px-2">50000</td>
+                                    <td class="py-2 px-2">2024-05-13</td>
+                                </tr>
+                                <tr class="bg-gray-50">
+                                    <td class="py-2 px-2">4</td>
+                                    <td class="py-2 px-2">Carlos Ríos</td>
+                                    <td class="py-2 px-2">3129876543</td>
+                                    <td class="py-2 px-2">Teclado</td>
+                                    <td class="py-2 px-2">1</td>
+                                    <td class="py-2 px-2">100000</td>
+                                    <td class="py-2 px-2">2024-05-13</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="mb-8">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2 text-cesde-primary">Aplicando la
+                        Segunda Forma Normal (2FN)</h3>
+
+                    <div class="bg-blue-50 border-l-4 border-blue-400 p-6 rounded-r-lg mb-6">
+                        <h4 class="font-bold text-gray-800 mb-3">Criterio de 2FN:</h4>
+                        <ul class="list-disc list-inside text-gray-700 space-y-2 text-sm">
+                            <li>Debe estar en 1FN.</li>
+                            <li>Elimina dependencias parciales: ningún campo no clave debe depender solo de una parte de
+                                la clave primaria compuesta.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-r-lg mb-6">
+                        <h4 class="font-bold text-gray-800 mb-3">Análisis de Dependencias:</h4>
+                        <p class="text-gray-700 text-sm mb-3">En este caso, la clave compuesta sería: <strong>(PedidoID,
+                                Producto)</strong></p>
+                        <p class="text-gray-700 text-sm mb-2">Pero:</p>
+                        <ul class="list-disc list-inside text-gray-700 space-y-1 text-sm">
+                            <li><strong>ClienteNombre, ClienteTel y FechaPedido</strong> dependen solo de
+                                <strong>PedidoID</strong>, no de la combinación completa.</li>
+                            <li>Esto significa que estos campos pueden irse a otra tabla.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-green-50 border-l-4 border-green-500 p-6 rounded-r-lg mb-6">
+                        <h4 class="font-bold text-gray-800 mb-3">Acción: Separamos en tablas</h4>
+                        <p class="text-gray-700 text-sm mb-2">Con esto conseguimos:</p>
+                        <ul class="list-disc list-inside text-gray-700 space-y-1 text-sm">
+                            <li>Se eliminan dependencias parciales.</li>
+                            <li>Cada tabla cumple un único propósito.</li>
+                            <li>Ya estaríamos en 2FN.</li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-8">
+                        <h4 class="font-bold text-gray-800 mb-4 text-lg">Resultado en 2FN:</h4>
+
+                        <div class="grid md:grid-cols-2 gap-4 mb-4">
+                            <div class="bg-white border-2 border-cesde-primary rounded-lg p-4">
+                                <h5 class="font-bold text-cesde-primary text-center mb-2 text-sm">Tabla: PEDIDOS</h5>
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full bg-gray-50 text-xs">
+                                        <thead class="bg-gray-800 text-white">
+                                            <tr>
+                                                <th class="py-1 px-2">PedidoID</th>
+                                                <th class="py-1 px-2">ClienteID</th>
+                                                <th class="py-1 px-2">FechaPedido</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-200">
+                                            <tr>
+                                                <td class="py-1 px-2">1</td>
+                                                <td class="py-1 px-2">1</td>
+                                                <td class="py-1 px-2">2024-05-10</td>
+                                            </tr>
+                                            <tr class="bg-white">
+                                                <td class="py-1 px-2">2</td>
+                                                <td class="py-1 px-2">2</td>
+                                                <td class="py-1 px-2">2024-05-11</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="py-1 px-2">3</td>
+                                                <td class="py-1 px-2">1</td>
+                                                <td class="py-1 px-2">2024-05-12</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="bg-white border-2 border-cesde-primary rounded-lg p-4">
+                                <h5 class="font-bold text-cesde-primary text-center mb-2 text-sm">Tabla: CLIENTES</h5>
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full bg-gray-50 text-xs">
+                                        <thead class="bg-gray-800 text-white">
+                                            <tr>
+                                                <th class="py-1 px-2">ClienteID</th>
+                                                <th class="py-1 px-2">ClienteNombre</th>
+                                                <th class="py-1 px-2">ClienteTel</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-200">
+                                            <tr>
+                                                <td class="py-1 px-2">1</td>
+                                                <td class="py-1 px-2">Ana Pérez</td>
+                                                <td class="py-1 px-2">3114567890</td>
+                                            </tr>
+                                            <tr class="bg-white">
+                                                <td class="py-1 px-2">2</td>
+                                                <td class="py-1 px-2">Luis Gómez</td>
+                                                <td class="py-1 px-2">3001234567</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-4 mb-4">
+                            <div class="bg-white border-2 border-cesde-primary rounded-lg p-4 md:col-span-2">
+                                <h5 class="font-bold text-cesde-primary text-center mb-2 text-sm">Tabla: DETALLES_PEDIDO
+                                    (Relación Pedido-Producto)</h5>
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full bg-gray-50 text-xs">
+                                        <thead class="bg-gray-800 text-white">
+                                            <tr>
+                                                <th class="py-1 px-2">PedidoID</th>
+                                                <th class="py-1 px-2">ProductoID</th>
+                                                <th class="py-1 px-2">Cantidad</th>
+                                                <th class="py-1 px-2">PrecioUnitario</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-200">
+                                            <tr>
+                                                <td class="py-1 px-2">1</td>
+                                                <td class="py-1 px-2">1</td>
+                                                <td class="py-1 px-2">1</td>
+                                                <td class="py-1 px-2">100000</td>
+                                            </tr>
+                                            <tr class="bg-white">
+                                                <td class="py-1 px-2">1</td>
+                                                <td class="py-1 px-2">2</td>
+                                                <td class="py-1 px-2">2</td>
+                                                <td class="py-1 px-2">50000</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="py-1 px-2">2</td>
+                                                <td class="py-1 px-2">3</td>
+                                                <td class="py-1 px-2">1</td>
+                                                <td class="py-1 px-2">600000</td>
+                                            </tr>
+                                            <tr class="bg-white">
+                                                <td class="py-1 px-2">3</td>
+                                                <td class="py-1 px-2">1</td>
+                                                <td class="py-1 px-2">1</td>
+                                                <td class="py-1 px-2">100000</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="py-1 px-2">3</td>
+                                                <td class="py-1 px-2">4</td>
+                                                <td class="py-1 px-2">1</td>
+                                                <td class="py-1 px-2">150000</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="bg-white border-2 border-cesde-primary rounded-lg p-4 md:col-span-2">
+                                <h5 class="font-bold text-cesde-primary text-center mb-2 text-sm">Tabla: PRODUCTOS</h5>
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full bg-gray-50 text-xs">
+                                        <thead class="bg-gray-800 text-white">
+                                            <tr>
+                                                <th class="py-1 px-2">ProductoID</th>
+                                                <th class="py-1 px-2">NombreProducto</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-200">
+                                            <tr>
+                                                <td class="py-1 px-2">1</td>
+                                                <td class="py-1 px-2">Teclado</td>
+                                            </tr>
+                                            <tr class="bg-white">
+                                                <td class="py-1 px-2">2</td>
+                                                <td class="py-1 px-2">Mouse</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="py-1 px-2">3</td>
+                                                <td class="py-1 px-2">Monitor</td>
+                                            </tr>
+                                            <tr class="bg-white">
+                                                <td class="py-1 px-2">4</td>
+                                                <td class="py-1 px-2">Webcam</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-lg text-sm">
+                            <p class="text-gray-700"><strong>Ventaja:</strong> Ahora cada tabla tiene una
+                                responsabilidad clara. Si Ana cambia su teléfono, solo actualizamos en la tabla CLIENTES
+                                una sola vez.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-8">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2 text-cesde-primary">Aplicando la
+                        Tercera Forma Normal (3FN)</h3>
+
+                    <div class="bg-purple-50 border-l-4 border-purple-400 p-6 rounded-r-lg mb-6">
+                        <h4 class="font-bold text-gray-800 mb-3">Criterio de 3FN:</h4>
+                        <ul class="list-disc list-inside text-gray-700 space-y-2 text-sm">
+                            <li>Estar en 2FN.</li>
+                            <li>Elimina dependencias transitivas: un campo no clave no debe depender de otro campo no
+                                clave.</li>
+                            <li>En otras palabras: el atributo debe depender de la llave, toda la llave y nada más que
+                                la llave.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-green-50 border-l-4 border-green-500 p-6 rounded-r-lg">
+                        <h4 class="font-bold text-gray-800 mb-3">Análisis de nuestro ejemplo:</h4>
+                        <p class="text-gray-700 text-sm mb-3">Revisando nuestro modelo 2FN:</p>
+                        <ul class="list-disc list-inside text-gray-700 space-y-2 text-sm">
+                            <li><strong>Tabla PEDIDOS:</strong> ClienteID depende de PedidoID ✓</li>
+                            <li><strong>Tabla CLIENTES:</strong> Solo atributos de cliente ✓</li>
+                            <li><strong>Tabla DETALLES_PEDIDO:</strong> Cantidad y PrecioUnitario dependen de (PedidoID,
+                                ProductoID) ✓</li>
+                            <li><strong>Tabla PRODUCTOS:</strong> Solo atributos de producto ✓</li>
+                        </ul>
+                        <p class="text-gray-700 text-sm mt-3"><strong>Conclusión:</strong> En nuestro ejemplo ya no hay
+                            campos no-clave que dependan de otros campos no-clave.</p>
+                        <p class="text-gray-700 text-sm mt-2 font-bold">Por lo tanto, el modelo ya cumple con 3FN.</p>
+                    </div>
+                </div>
+
+            </section>
+            <section class="mb-12">
+                <h2 class="text-xl font-bold text-cesde-primary mb-4 border-b pb-2">Preguntas Frecuentes</h2>
+
+                <div class="space-y-4">
+                    <div class="bg-blue-50 border-l-4 border-blue-400 p-5 rounded-r-lg">
+                        <h3 class="font-bold text-gray-800 mb-2">¿Al dividir la tabla no se hace más difícil leer la
+                            información?</h3>
+                        <p class="text-gray-700 text-sm">Para un humano, sí. Para el sistema, es perfecto. El sistema
+                            une las tablas en milisegundos cuando lo necesites. Lo que ganamos es que si Ana se cambia
+                            de zona, solo modificamos una celda, y automáticamente todas las facturas quedan
+                            actualizadas.</p>
+                    </div>
+
+                    <div class="bg-blue-50 border-l-4 border-blue-400 p-5 rounded-r-lg">
+                        <h3 class="font-bold text-gray-800 mb-2">¿Cómo sé cuándo parar de dividir?</h3>
+                        <p class="text-gray-700 text-sm mb-2">Cuando cada tabla habla de una sola cosa:</p>
+                        <ul class="list-disc list-inside text-gray-700 text-sm space-y-1">
+                            <li>Una tabla solo habla de Productos.</li>
+                            <li>Otra solo habla de Clientes.</li>
+                            <li>Otra solo habla de Ventas.</li>
+                        </ul>
+                        <p class="text-gray-700 text-sm mt-2">Si en la tabla de "Ventas" tienes la "Fecha de nacimiento
+                            del vendedor", te has detenido demasiado pronto.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mb-12">
+                <h2 class="text-xl font-bold text-cesde-primary mb-4 border-b pb-2">Demo: Sistema de Notas Escolares</h2>
+                
+                <div class="mb-8">
+                    <h3 class="font-bold text-gray-800 mb-3">Estado Inicial (Sin Normalizar - UNF):</h3>
+                    <p class="text-gray-600 text-sm mb-3">Santiago ve 3 materias y los datos están mezclados:</p>
+                    <div class="overflow-x-auto shadow-lg rounded-lg border border-gray-200">
+                        <table class="min-w-full bg-white text-sm">
+                            <thead class="bg-gray-900 text-white">
+                                <tr>
+                                    <th class="py-2 px-3 font-semibold text-xs">Estudiante</th>
+                                    <th class="py-2 px-3 font-semibold text-xs">Materia</th>
+                                    <th class="py-2 px-3 font-semibold text-xs">Profesor</th>
+                                    <th class="py-2 px-3 font-semibold text-xs">Oficina_Prof</th>
+                                    <th class="py-2 px-3 font-semibold text-xs">Nota_Final</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr>
+                                    <td class="py-2 px-3">Santiago</td>
+                                    <td class="py-2 px-3">Matemáticas</td>
+                                    <td class="py-2 px-3">Sr. X</td>
+                                    <td class="py-2 px-3">202</td>
+                                    <td class="py-2 px-3">4.5</td>
+                                </tr>
+                                <tr class="bg-gray-50">
+                                    <td class="py-2 px-3">Santiago</td>
+                                    <td class="py-2 px-3">Historia</td>
+                                    <td class="py-2 px-3">Sra. Y</td>
+                                    <td class="py-2 px-3">101</td>
+                                    <td class="py-2 px-3">3.0</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 px-3">Santiago</td>
+                                    <td class="py-2 px-3">Física</td>
+                                    <td class="py-2 px-3">Sr. Z</td>
+                                    <td class="py-2 px-3">303</td>
+                                    <td class="py-2 px-3">3.5</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="mb-8">
+                    <h3 class="font-bold text-gray-800 mb-3">Paso 1: Aplicar 1FN (Tabla Plana)</h3>
+                    <p class="text-gray-600 text-sm mb-3">La tabla ya es plana, cada fila tiene un único registro:</p>
+                    <div class="bg-gray-50 p-4 rounded border-l-4 border-gray-800 text-sm text-gray-700">
+                        <p>1. Santiago - Matemáticas - Sr. X - Of 202 - 4.5</p>
+                        <p>2. Santiago - Historia - Sra. Y - Of 101 - 3.0</p>
+                        <p>3. Santiago - Física - Sr. Z - Of 303 - 3.5</p>
+                    </div>
+                    <p class="text-gray-600 text-sm mt-3"><strong>Estado:</strong> ✓ Aplicado 1FN</p>
+                </div>
+
+                <div class="mb-8">
+                    <h3 class="font-bold text-gray-800 mb-3">Paso 2: Aplicar 2FN (Dependencias Parciales)</h3>
+                    <p class="text-gray-600 text-sm mb-3"><strong>Llave:</strong> Estudiante + Materia</p>
+                    
+                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-r-lg mb-4">
+                        <p class="text-gray-700 text-sm mb-2"><strong>¿El Profesor depende del Estudiante?</strong> NO</p>
+                        <p class="text-gray-700 text-sm">El Profesor depende de la Materia (quien enseña esa materia), no del estudiante.</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h4 class="font-bold text-gray-800 mb-3">Acción: Separamos en dos tablas</h4>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="bg-white border-2 border-cesde-primary rounded-lg p-4">
+                                <h5 class="font-bold text-cesde-primary text-center mb-2 text-sm">Tabla: MATERIAS</h5>
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full bg-gray-50 text-xs">
+                                        <thead class="bg-gray-800 text-white">
+                                            <tr>
+                                                <th class="py-1 px-2">Materia</th>
+                                                <th class="py-1 px-2">Profesor</th>
+                                                <th class="py-1 px-2">Oficina_Prof</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-200">
+                                            <tr>
+                                                <td class="py-1 px-2">Matemáticas</td>
+                                                <td class="py-1 px-2">Sr. X</td>
+                                                <td class="py-1 px-2">202</td>
+                                            </tr>
+                                            <tr class="bg-white">
+                                                <td class="py-1 px-2">Historia</td>
+                                                <td class="py-1 px-2">Sra. Y</td>
+                                                <td class="py-1 px-2">101</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="py-1 px-2">Física</td>
+                                                <td class="py-1 px-2">Sr. Z</td>
+                                                <td class="py-1 px-2">303</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="bg-white border-2 border-cesde-primary rounded-lg p-4">
+                                <h5 class="font-bold text-cesde-primary text-center mb-2 text-sm">Tabla: NOTAS</h5>
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full bg-gray-50 text-xs">
+                                        <thead class="bg-gray-800 text-white">
+                                            <tr>
+                                                <th class="py-1 px-2">Estudiante</th>
+                                                <th class="py-1 px-2">Materia</th>
+                                                <th class="py-1 px-2">Nota</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-200">
+                                            <tr>
+                                                <td class="py-1 px-2">Santiago</td>
+                                                <td class="py-1 px-2">Matemáticas</td>
+                                                <td class="py-1 px-2">4.5</td>
+                                            </tr>
+                                            <tr class="bg-white">
+                                                <td class="py-1 px-2">Santiago</td>
+                                                <td class="py-1 px-2">Historia</td>
+                                                <td class="py-1 px-2">3.0</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="py-1 px-2">Santiago</td>
+                                                <td class="py-1 px-2">Física</td>
+                                                <td class="py-1 px-2">3.5</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 text-sm mt-3"><strong>Estado:</strong> ✓ Aplicado 2FN</p>
+                </div>
+
+                <div class="mb-8">
+                    <h3 class="font-bold text-gray-800 mb-3">Paso 3: Aplicar 3FN (Dependencias Transitivas)</h3>
+                    
+                    <div class="bg-red-50 border-l-4 border-red-400 p-6 rounded-r-lg mb-4">
+                        <p class="text-gray-700 text-sm mb-2"><strong>Problema en Tabla MATERIAS:</strong></p>
+                        <p class="text-gray-700 text-sm">La Oficina_Prof depende del Profesor, NO de la Materia.</p>
+                        <p class="text-gray-700 text-sm mt-2">Si el Sr. X enseña 5 materias, repetiremos "Oficina 202" 5 veces → Redundancia</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h4 class="font-bold text-gray-800 mb-3">Acción: Sacamos los profesores a su propia tabla</h4>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="bg-white border-2 border-cesde-primary rounded-lg p-4">
+                                <h5 class="font-bold text-cesde-primary text-center mb-2 text-sm">Tabla: PROFESORES</h5>
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full bg-gray-50 text-xs">
+                                        <thead class="bg-gray-800 text-white">
+                                            <tr>
+                                                <th class="py-1 px-2">Profesor</th>
+                                                <th class="py-1 px-2">Oficina</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-200">
+                                            <tr>
+                                                <td class="py-1 px-2">Sr. X</td>
+                                                <td class="py-1 px-2">202</td>
+                                            </tr>
+                                            <tr class="bg-white">
+                                                <td class="py-1 px-2">Sra. Y</td>
+                                                <td class="py-1 px-2">101</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="py-1 px-2">Sr. Z</td>
+                                                <td class="py-1 px-2">303</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="bg-white border-2 border-cesde-primary rounded-lg p-4">
+                                <h5 class="font-bold text-cesde-primary text-center mb-2 text-sm">Tabla: MATERIAS (Refinada)</h5>
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full bg-gray-50 text-xs">
+                                        <thead class="bg-gray-800 text-white">
+                                            <tr>
+                                                <th class="py-1 px-2">Materia</th>
+                                                <th class="py-1 px-2">Profesor_ID</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-200">
+                                            <tr>
+                                                <td class="py-1 px-2">Matemáticas</td>
+                                                <td class="py-1 px-2">Sr. X</td>
+                                            </tr>
+                                            <tr class="bg-white">
+                                                <td class="py-1 px-2">Historia</td>
+                                                <td class="py-1 px-2">Sra. Y</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="py-1 px-2">Física</td>
+                                                <td class="py-1 px-2">Sr. Z</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 text-sm mt-3"><strong>Estado:</strong> ✓ Aplicado 3FN</p>
+                </div>
+
+                <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-lg text-sm">
+                    <p class="text-gray-700"><strong>Ventaja final:</strong> Si el Sr. X se muda a la oficina 250, solo cambias una celda en PROFESORES y automáticamente todas sus materias se actualizan.</p>
+                </div>
+            </section>
+
+            <section class="mb-12">
+                <h2 class="text-xl font-bold text-cesde-primary mb-4 border-b pb-2">Práctica Acompañada</h2>
+
+                <div class="mb-8">
+                    <h3 class="font-bold text-gray-800 mb-3">Ejercicio: "La Clínica Médica"</h3>
+                    
+                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-r-lg mb-6">
+                        <h4 class="font-bold text-gray-800 mb-3">Enunciado:</h4>
+                        <p class="text-gray-700 text-sm mb-3">El hospital tiene este formato en Excel para las citas:</p>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full bg-white text-xs border border-gray-300">
+                                <thead class="bg-gray-800 text-white">
+                                    <tr>
+                                        <th class="py-2 px-2">CitaID</th>
+                                        <th class="py-2 px-2">Fecha</th>
+                                        <th class="py-2 px-2">Paciente</th>
+                                        <th class="py-2 px-2">Edad_Paciente</th>
+                                        <th class="py-2 px-2">Alergias_Paciente</th>
+                                        <th class="py-2 px-2">Doctor</th>
+                                        <th class="py-2 px-2">Especialidad_Doctor</th>
+                                        <th class="py-2 px-2">Consultorio</th>
+                                        <th class="py-2 px-2">Diagnostico</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="bg-gray-50">
+                                        <td class="py-2 px-2">...</td>
+                                        <td class="py-2 px-2">...</td>
+                                        <td class="py-2 px-2">...</td>
+                                        <td class="py-2 px-2">...</td>
+                                        <td class="py-2 px-2">...</td>
+                                        <td class="py-2 px-2">...</td>
+                                        <td class="py-2 px-2">...</td>
+                                        <td class="py-2 px-2">...</td>
+                                        <td class="py-2 px-2">...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 border-l-4 border-blue-400 p-6 rounded-r-lg mb-6">
+                        <h4 class="font-bold text-gray-800 mb-3">Instrucciones:</h4>
+                        <ul class="list-disc list-inside text-gray-700 space-y-2 text-sm">
+                            <li>Dibuja en una hoja o en Excel cómo quedarían las tablas separadas aplicando las 3 formas normales.</li>
+                            <li>Identifica qué información corresponde a cada tabla.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-green-50 border-l-4 border-green-500 p-6 rounded-r-lg mb-6">
+                        <h4 class="font-bold text-gray-800 mb-3">Pistas:</h4>
+                        <ul class="list-disc list-inside text-gray-700 space-y-1 text-sm">
+                            <li>Un paciente tiene edad y alergias <strong>siempre</strong>, no solo en la cita.</li>
+                            <li>El doctor tiene una especialidad <strong>siempre</strong>, es información del doctor, no de la cita.</li>
+                            <li>La cita es el <strong>evento</strong> que relaciona pacientes con doctores.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <details class="bg-white border-2 border-cesde-primary rounded-lg p-6 mb-8 cursor-pointer">
+                    <summary class="font-bold text-lg text-cesde-primary hover:text-red-600 transition-colors flex items-center">
+                        <span class="mr-3">▶ Ver Solución</span>
+                    </summary>
+                    <div class="mt-6 pt-6 border-t border-gray-300">
+                        <h4 class="font-bold text-gray-800 mb-4">Solución:</h4>
+
+                        <div class="mb-6">
+                            <h5 class="font-bold text-gray-800 mb-2">Paso 1: Detectar Entidades Fuertes</h5>
+                            <p class="text-gray-700 text-sm mb-3">Las entidades más importantes del sistema son:</p>
+                            <ul class="list-disc list-inside text-gray-700 space-y-1 text-sm">
+                                <li><strong>Paciente:</strong> Persona que requiere atención médica</li>
+                                <li><strong>Doctor:</strong> Profesional que proporciona atención</li>
+                            </ul>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-4 mb-6">
+                            <div class="bg-white border-2 border-cesde-primary rounded-lg p-4">
+                                <h5 class="font-bold text-cesde-primary text-center mb-2 text-sm">Tabla: PACIENTES</h5>
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full bg-gray-50 text-xs">
+                                        <thead class="bg-gray-800 text-white">
+                                            <tr>
+                                                <th class="py-1 px-2">PacienteID</th>
+                                                <th class="py-1 px-2">Nombre</th>
+                                                <th class="py-1 px-2">Edad</th>
+                                                <th class="py-1 px-2">Alergias</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-200">
+                                            <tr>
+                                                <td class="py-1 px-2">1</td>
+                                                <td class="py-1 px-2">Juan</td>
+                                                <td class="py-1 px-2">45</td>
+                                                <td class="py-1 px-2">Penicilina</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="bg-white border-2 border-cesde-primary rounded-lg p-4">
+                                <h5 class="font-bold text-cesde-primary text-center mb-2 text-sm">Tabla: DOCTORES</h5>
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full bg-gray-50 text-xs">
+                                        <thead class="bg-gray-800 text-white">
+                                            <tr>
+                                                <th class="py-1 px-2">DoctorID</th>
+                                                <th class="py-1 px-2">Nombre</th>
+                                                <th class="py-1 px-2">Especialidad</th>
+                                                <th class="py-1 px-2">Consultorio</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-200">
+                                            <tr>
+                                                <td class="py-1 px-2">1</td>
+                                                <td class="py-1 px-2">Dra. López</td>
+                                                <td class="py-1 px-2">Cardiología</td>
+                                                <td class="py-1 px-2">201</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-6">
+                            <h5 class="font-bold text-gray-800 mb-3">Paso 2: Detectar el Evento (La relación)</h5>
+                            <p class="text-gray-700 text-sm mb-3">La <strong>Cita</strong> es el evento que vincula un Paciente con un Doctor en un momento específico.</p>
+                            <div class="bg-white border-2 border-cesde-primary rounded-lg p-4">
+                                <h5 class="font-bold text-cesde-primary text-center mb-2 text-sm">Tabla: CITAS</h5>
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full bg-gray-50 text-xs">
+                                        <thead class="bg-gray-800 text-white">
+                                            <tr>
+                                                <th class="py-1 px-2">CitaID</th>
+                                                <th class="py-1 px-2">Fecha</th>
+                                                <th class="py-1 px-2">Paciente_ID</th>
+                                                <th class="py-1 px-2">Doctor_ID</th>
+                                                <th class="py-1 px-2">Diagnostico</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-200">
+                                            <tr>
+                                                <td class="py-1 px-2">1</td>
+                                                <td class="py-1 px-2">2024-05-15</td>
+                                                <td class="py-1 px-2">1</td>
+                                                <td class="py-1 px-2">1</td>
+                                                <td class="py-1 px-2">Arritmia</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-r-lg text-sm">
+                            <p class="text-gray-700 mb-2"><strong>Beneficio de esta estructura:</strong></p>
+                            <ul class="list-disc list-inside text-gray-700 space-y-1 text-xs">
+                                <li>Si un paciente cambia su teléfono, actualizas una sola vez en PACIENTES.</li>
+                                <li>Si un doctor se muda de consultorio, cambias en DOCTORES y todas sus citas se actualizan automáticamente.</li>
+                                <li>Las alergias del paciente están centralizadas y nunca se pierden o duplican.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </details>
+            </section>
+
+            <section class="mb-12">
+                <h2 class="text-xl font-bold text-cesde-primary mb-4 border-b pb-2">Demo Independiente</h2>
+
+                <div class="mb-8">
+                    <h3 class="font-bold text-gray-800 mb-3">Ejercicio: Empresa de Transporte de Carga</h3>
+                    
+                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-r-lg mb-6">
+                        <h4 class="font-bold text-gray-800 mb-3">Enunciado:</h4>
+                        <p class="text-gray-700 text-sm mb-3">Una empresa de transporte de carga registra sus envíos así:</p>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full bg-white text-xs border border-gray-300">
+                                <thead class="bg-gray-800 text-white">
+                                    <tr>
+                                        <th class="py-2 px-2">Guía_Envío</th>
+                                        <th class="py-2 px-2">Fecha</th>
+                                        <th class="py-2 px-2">Camión_Placa</th>
+                                        <th class="py-2 px-2">Marca_Camión</th>
+                                        <th class="py-2 px-2">Modelo_Camión</th>
+                                        <th class="py-2 px-2">Chofer</th>
+                                        <th class="py-2 px-2">Licencia_Chofer</th>
+                                        <th class="py-2 px-2">Ciudad_Origen</th>
+                                        <th class="py-2 px-2">Ciudad_Destino</th>
+                                        <th class="py-2 px-2">Peso_Carga</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="bg-gray-50">
+                                        <td class="py-2 px-2">...</td>
+                                        <td class="py-2 px-2">...</td>
+                                        <td class="py-2 px-2">...</td>
+                                        <td class="py-2 px-2">...</td>
+                                        <td class="py-2 px-2">...</td>
+                                        <td class="py-2 px-2">...</td>
+                                        <td class="py-2 px-2">...</td>
+                                        <td class="py-2 px-2">...</td>
+                                        <td class="py-2 px-2">...</td>
+                                        <td class="py-2 px-2">...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 border-l-4 border-blue-400 p-6 rounded-r-lg mb-6">
+                        <h4 class="font-bold text-gray-800 mb-3">Instrucciones:</h4>
+                        <ul class="list-disc list-inside text-gray-700 space-y-2 text-sm">
+                            <li>Normaliza este esquema hasta <strong>3FN</strong>.</li>
+                            <li>Entrega el dibujo de las tablas resultantes con sus columnas.</li>
+                            <li>Identifica claramente las claves primarias y foráneas.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-green-50 border-l-4 border-green-500 p-6 rounded-r-lg mb-6">
+                        <h4 class="font-bold text-gray-800 mb-3">Pistas Clave:</h4>
+                        <ul class="list-disc list-inside text-gray-700 space-y-2 text-sm">
+                            <li>Un <strong>camión</strong> tiene marca y modelo siempre (entidad fuerte).</li>
+                            <li>Un <strong>chofer</strong> tiene licencia siempre (entidad fuerte).</li>
+                            <li>Un camión puede ser conducido por diferentes choferes (rotan los conductores) → tablas independientes.</li>
+                            <li>Un <strong>envío</strong> es el evento que une camión, chofer, ruta y carga.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <details class="bg-white border-2 border-cesde-primary rounded-lg p-6 mb-8 cursor-pointer">
+                    <summary class="font-bold text-lg text-cesde-primary hover:text-red-600 transition-colors flex items-center">
+                        <span class="mr-3">▶ Ver Solución</span>
+                    </summary>
+                    <div class="mt-6 pt-6 border-t border-gray-300">
+                        <h4 class="font-bold text-gray-800 mb-6">Solución: Tablas Normalizadas hasta 3FN</h4>
+
+                        <div class="grid md:grid-cols-2 gap-4 mb-6">
+                            <div class="bg-white border-2 border-cesde-primary rounded-lg p-4">
+                                <h5 class="font-bold text-cesde-primary text-center mb-2 text-sm">Tabla: CAMIONES</h5>
+                                <p class="text-gray-600 text-xs mb-2 text-center italic">(Entidad fuerte)</p>
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full bg-gray-50 text-xs">
+                                        <thead class="bg-gray-800 text-white">
+                                            <tr>
+                                                <th class="py-1 px-2">Placa (PK)</th>
+                                                <th class="py-1 px-2">Marca</th>
+                                                <th class="py-1 px-2">Modelo</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-200">
+                                            <tr>
+                                                <td class="py-1 px-2">ABC-123</td>
+                                                <td class="py-1 px-2">Volvo</td>
+                                                <td class="py-1 px-2">FH16</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="bg-white border-2 border-cesde-primary rounded-lg p-4">
+                                <h5 class="font-bold text-cesde-primary text-center mb-2 text-sm">Tabla: CHOFERES</h5>
+                                <p class="text-gray-600 text-xs mb-2 text-center italic">(Entidad fuerte)</p>
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full bg-gray-50 text-xs">
+                                        <thead class="bg-gray-800 text-white">
+                                            <tr>
+                                                <th class="py-1 px-2">ChoferID (PK)</th>
+                                                <th class="py-1 px-2">Nombre</th>
+                                                <th class="py-1 px-2">Licencia</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-200">
+                                            <tr>
+                                                <td class="py-1 px-2">1</td>
+                                                <td class="py-1 px-2">Carlos Pérez</td>
+                                                <td class="py-1 px-2">CAT-001</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-4 mb-6">
+                            <div class="bg-white border-2 border-cesde-primary rounded-lg p-4">
+                                <h5 class="font-bold text-cesde-primary text-center mb-2 text-sm">Tabla: RUTAS (Opcional)</h5>
+                                <p class="text-gray-600 text-xs mb-2 text-center italic">(Si se repiten muchas rutas)</p>
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full bg-gray-50 text-xs">
+                                        <thead class="bg-gray-800 text-white">
+                                            <tr>
+                                                <th class="py-1 px-2">RutaID (PK)</th>
+                                                <th class="py-1 px-2">Origen</th>
+                                                <th class="py-1 px-2">Destino</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-200">
+                                            <tr>
+                                                <td class="py-1 px-2">1</td>
+                                                <td class="py-1 px-2">Bogotá</td>
+                                                <td class="py-1 px-2">Medellín</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="bg-white border-2 border-cesde-primary rounded-lg p-4 md:col-span-2">
+                                <h5 class="font-bold text-cesde-primary text-center mb-2 text-sm">Tabla: ENVIOS (Tabla Central)</h5>
+                                <p class="text-gray-600 text-xs mb-2 text-center italic">(El evento que une todo)</p>
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full bg-gray-50 text-xs">
+                                        <thead class="bg-gray-800 text-white">
+                                            <tr>
+                                                <th class="py-1 px-2">Guía (PK)</th>
+                                                <th class="py-1 px-2">Fecha</th>
+                                                <th class="py-1 px-2">Placa_Camion (FK)</th>
+                                                <th class="py-1 px-2">ChoferID (FK)</th>
+                                                <th class="py-1 px-2">RutaID (FK)</th>
+                                                <th class="py-1 px-2">Peso_Carga</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-200">
+                                            <tr>
+                                                <td class="py-1 px-2">G-001</td>
+                                                <td class="py-1 px-2">2024-05-15</td>
+                                                <td class="py-1 px-2">ABC-123</td>
+                                                <td class="py-1 px-2">1</td>
+                                                <td class="py-1 px-2">1</td>
+                                                <td class="py-1 px-2">5000 kg</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-lg mb-4 text-sm">
+                            <p class="text-gray-700 mb-2"><strong>Notas sobre la solución:</strong></p>
+                            <ul class="list-disc list-inside text-gray-700 space-y-1 text-xs">
+                                <li><strong>PK =</strong> Primary Key (Clave Primaria)</li>
+                                <li><strong>FK =</strong> Foreign Key (Clave Foránea)</li>
+                                <li>CAMIONES y CHOFERES son tablas <strong>independientes</strong> porque un camión puede ser conducido por diferentes choferes.</li>
+                                <li>RUTAS es opcional. Si solo hay pocas combinaciones de origen-destino, puedes poner Origin y Destino directamente en ENVIOS.</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-r-lg text-sm">
+                            <p class="text-gray-700"><strong>Beneficios de esta normalización:</strong></p>
+                            <ul class="list-disc list-inside text-gray-700 space-y-1 text-xs mt-2">
+                                <li>Si un camión cambia de marca (raramente sucede pero es posible), actualizas en CAMIONES.</li>
+                                <li>Si un chofer cambia de licencia, cambias en CHOFERES.</li>
+                                <li>Las rutas se reutilizan y no se duplican.</li>
+                                <li>Un mismo chofer puede manejar diferentes camiones sin duplicar sus datos.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </details>
+            </section>
+
+            <section class="mb-12">
+                <h2 class="text-xl font-bold text-cesde-primary mb-4 border-b pb-2">Ejercicio Independiente - El Hotel</h2>
+
+                <div class="mb-8">
+                    <h3 class="font-bold text-gray-800 mb-3">Contexto: Hotel Paraíso</h3>
+                    <p class="text-gray-700 text-sm mb-3">El "Hotel Paraíso" registra sus huéspedes en un libro de actas manual con la siguiente estructura:</p>
+                    
+                    <div class="overflow-x-auto shadow-lg rounded-lg border border-gray-200 mb-6">
+                        <table class="min-w-full bg-white text-xs">
+                            <thead class="bg-gray-900 text-white">
+                                <tr>
+                                    <th class="py-2 px-2">Habitación</th>
+                                    <th class="py-2 px-2">Tipo_Habitacion</th>
+                                    <th class="py-2 px-2">Precio_Noche</th>
+                                    <th class="py-2 px-2">Huesped_Principal</th>
+                                    <th class="py-2 px-2">Documento</th>
+                                    <th class="py-2 px-2">Telefono</th>
+                                    <th class="py-2 px-2">Fecha_Llegada</th>
+                                    <th class="py-2 px-2">Fecha_Salida</th>
+                                    <th class="py-2 px-2">Noches_Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-gray-50">
+                                    <td class="py-2 px-2">101</td>
+                                    <td class="py-2 px-2">Doble</td>
+                                    <td class="py-2 px-2">150000</td>
+                                    <td class="py-2 px-2">Juan Pérez</td>
+                                    <td class="py-2 px-2">1234567</td>
+                                    <td class="py-2 px-2">3105551234</td>
+                                    <td class="py-2 px-2">2024-05-10</td>
+                                    <td class="py-2 px-2">2024-05-12</td>
+                                    <td class="py-2 px-2">2</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="mb-8">
+                    <h3 class="font-bold text-gray-800 mb-3">Reto:</h3>
+                    <p class="text-gray-700 text-sm mb-3">Diseña el esquema de tablas para digitalizar este hotel.</p>
+                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-r-lg">
+                        <ol class="list-decimal list-inside text-gray-700 space-y-2 text-sm">
+                            <li>Que el <strong>precio de la habitación</strong> depende del tipo de habitación, <strong>no del huésped</strong>.</li>
+                            <li>Que un <strong>huésped puede venir muchas veces</strong> (no repetir sus datos).</li>
+                            <li>Calcula si <strong>"Noches_Total"</strong> debería guardarse o calcularse.
+                                <p class="text-gray-600 text-xs ml-6 mt-1"><em>Pista: Dato calculado vs Dato almacenado</em></p>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="mb-8">
+                    <h3 class="font-bold text-gray-800 mb-3">Criterios de Logro:</h3>
+                    <div class="bg-blue-50 border-l-4 border-blue-400 p-6 rounded-r-lg">
+                        <ul class="list-disc list-inside text-gray-700 space-y-2 text-sm">
+                            <li>Creación de Tabla <strong>Huespedes</strong>.</li>
+                            <li>Creación de Tabla <strong>Habitaciones</strong> (con su tipo y precio base).</li>
+                            <li>Creación de Tabla <strong>Reservas o Estadías</strong> que una todo.</li>
+                            <li>Eliminación de columnas calculadas (<strong>Noches_Total</strong> no se guarda, se calcula restando fechas en el reporte).</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <details class="bg-white border-2 border-cesde-primary rounded-lg p-6 cursor-pointer">
+                    <summary class="font-bold text-lg text-cesde-primary hover:text-red-600 transition-colors flex items-center">
+                        <span class="mr-3">▶ Tips para resolver el ejercicio</span>
+                    </summary>
+                    <div class="mt-6 pt-6 border-t border-gray-300">
+                        <h4 class="font-bold text-gray-800 mb-4">Guía de Resolución:</h4>
+
+                        <div class="space-y-4">
+                            <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-r-lg">
+                                <h5 class="font-bold text-gray-800 mb-2">Paso 1: Identifica Entidades Fuertes</h5>
+                                <p class="text-gray-700 text-sm mb-2">¿Cuáles son los conceptos independientes?</p>
+                                <ul class="list-disc list-inside text-gray-700 text-sm space-y-1 ml-3">
+                                    <li><strong>Huésped:</strong> Persona que se hospeda (tiene documento, teléfono)</li>
+                                    <li><strong>Habitación:</strong> El cuarto del hotel (tiene tipo y precio fijo)</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-lg">
+                                <h5 class="font-bold text-gray-800 mb-2">Paso 2: Identifica el Evento</h5>
+                                <p class="text-gray-700 text-sm">¿Qué tabla une el huésped con la habitación?</p>
+                                <p class="text-gray-700 text-sm mt-2"><strong>Reserva o Estadía:</strong> El registro de que un huésped ocupó una habitación en un período de tiempo.</p>
+                            </div>
+
+                            <div class="bg-purple-50 border-l-4 border-purple-400 p-4 rounded-r-lg">
+                                <h5 class="font-bold text-gray-800 mb-2">Paso 3: Resuelve el Dato Calculado</h5>
+                                <p class="text-gray-700 text-sm mb-2"><strong>¿Guardar Noches_Total o Calcularla?</strong></p>
+                                <p class="text-gray-700 text-sm">✓ <strong>Mejor:</strong> Calcularla restando Fecha_Salida - Fecha_Llegada</p>
+                                <p class="text-gray-600 text-xs mt-2">Razón: Evitas redundancia. Si cambias una fecha, el total se actualiza automáticamente en el reporte, sin tener que editar dos campos.</p>
+                            </div>
+
+                            <div class="bg-orange-50 border-l-4 border-orange-400 p-4 rounded-r-lg">
+                                <h5 class="font-bold text-gray-800 mb-2">Paso 4: Estructura de Tablas</h5>
+                                <p class="text-gray-700 text-sm mb-2">Tu esquema debería verse así:</p>
+                                <div class="bg-gray-700 text-gray-100 p-3 rounded text-xs font-mono mt-2 space-y-1">
+                                    <p>Tabla HUESPEDES: HuespedID, Nombre, Documento, Telefono</p>
+                                    <p>Tabla HABITACIONES: HabitacionID, Numero, Tipo, PrecioNoche</p>
+                                    <p>Tabla RESERVAS: ReservaID, HuespedID, HabitacionID, FechaLlegada, FechaSalida</p>
+                                    <p class="text-gray-400 text-xs mt-2">*(Noches_Total se calcula en consultas, no se almacena)</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-r-lg mt-4 text-sm">
+                            <p class="text-gray-700 mb-2"><strong>Beneficio final:</strong></p>
+                            <ul class="list-disc list-inside text-gray-700 space-y-1 text-xs">
+                                <li>Si un huésped vuelve al hotel en otra fecha, no repites su información (reutilizas su registro).</li>
+                                <li>Si cambias el precio de una habitación Doble, solo lo haces una vez en HABITACIONES.</li>
+                                <li>Cada reserva es un registro independiente con sus fechas propias.</li>
+                                <li>Las fechas son la única fuente de verdad para calcular noches ocupadas.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </details>
+            </section>
+
+
+
+
+            <footer class="mt-16 pt-8 border-t border-gray-200 text-center text-sm text-gray-500">
+                <img src="src/logo.png" class="h-8 mx-auto mb-3 opacity-50 grayscale invert">
+                <p>Docente: <strong>Santiago Yosa González</strong></p>
+            </footer>
+        </div>
+    </main>
+
+    <script>
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const desktopToggleBtn = document.getElementById('desktop-toggle-btn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+
+        // Función para toggle en móvil (Overlay)
+        function toggleMobileMenu() {
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        }
+
+        // Función para toggle en escritorio (Espacio)
+        function toggleDesktopSidebar() {
+            // Simplemente movemos el sidebar fuera de la vista usando margen negativo
+            sidebar.classList.toggle('sidebar-closed');
+        }
+
+        mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+        overlay.addEventListener('click', toggleMobileMenu);
+        desktopToggleBtn.addEventListener('click', toggleDesktopSidebar);
+    </script>
+</body>
+
+</html>
