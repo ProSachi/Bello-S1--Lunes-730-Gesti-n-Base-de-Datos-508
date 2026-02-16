@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión BD</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="https://www.cesde.edu.co/wp-content/uploads/2022/11/cropped-favicon-32x32.png" sizes="32x32">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                    },
+                    colors: {
+                        cesde: {
+                            primary: '#D60057', // Magenta Institucional
+                            dark: '#1a1a1a',
+                            sidebar: '#000000',
+                            light: '#f3f4f6',
+                            accent: '#FFC107'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Transición suave para el sidebar */
+        #sidebar {
+            transition: width 0.3s ease-in-out, flex-basis 0.3s ease-in-out;
+            flex-basis: auto;
+        }
+
+        /* Clase para ocultar sidebar en desktop */
+        .sidebar-closed {
+            width: 0 !important;
+            flex-basis: 0 !important;
+            flex-shrink: 1 !important;
+            overflow: hidden;
+        }
+
+        /* Asegurar que main se expanda */
+        main {
+            flex-grow: 1;
+            flex-basis: auto;
+        }
+
+        /* Contenedor de contenido - Default */
+        .content-container {
+            max-width: 56rem;
+            transition: max-width 0.3s ease-in-out;
+        }
+
+        /* Cuando sidebar está cerrado, expandir contenedor */
+        .content-container.expanded {
+            max-width: 100%;
+        }
+
+        /* Estilos gráficos MER */
+        .shape-entity {
+            border: 2px solid #D60057;
+            background-color: white;
+            padding: 10px 20px;
+            display: inline-block;
+            font-weight: bold;
+            border-radius: 2px;
+            box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1);
+        }
+
+        .shape-attribute {
+            border: 2px solid #4B5563;
+            background-color: white;
+            padding: 8px 15px;
+            border-radius: 50%;
+            display: inline-block;
+            font-size: 0.9em;
+        }
+
+        .shape-relation {
+            width: 80px;
+            height: 80px;
+            background-color: #f3f4f6;
+            border: 2px solid #1a1a1a;
+            transform: rotate(45deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+
+        .shape-relation span {
+            transform: rotate(-45deg);
+            font-weight: bold;
+            font-size: 0.8em;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-700 h-screen flex flex-col md:flex-row overflow-hidden">
+
+
+    <header class="md:hidden bg-black text-white p-4 flex justify-between items-center z-50 shadow-md">
+        <div class="font-bold tracking-wider text-lg">GESTIÓN DB</div>
+        <button id="mobile-menu-btn" class="focus:outline-none text-cesde-primary">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+            </svg>
+        </button>
+    </header>
+
+    <aside id="sidebar"
+        class="bg-cesde-sidebar text-gray-400 w-72 flex-shrink-0 fixed md:relative inset-y-0 left-0 transform -translate-x-full md:translate-x-0 z-40 border-r border-gray-800 flex flex-col h-full">
+
+        <div class="p-6 text-center border-b border-gray-800">
+            <img src="src/logo.png" alt="CESDE Logo"
+                class="w-32 mx-auto h-auto opacity-90 hover:opacity-100 transition-opacity">
+        </div>
+
+        <nav class="flex-1 overflow-y-auto py-4">
+            <ul class="space-y-1">
+                <li>
+                    <a href="index.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm">
+                        Recurso Global
+                    </a>
+                </li>
+                <li>
+                    <a href="semana2.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm">
+                        Semana 2: Fundamentos BD
+                    </a>
+                </li>
+                <li>
+                    <a href="semana3.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm">
+                        Semana 3: Normalización
+                    </a>
+                </li>
+                <li>
+                    <a href="semana4.html"
+                        class="block py-2 px-6 bg-gray-900 border-l-4 border-cesde-primary text-white font-medium text-sm">
+                        Semana 4: Normalización
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 5: Lenguaje SQL
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 6: Entrega Momento 1
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 7: Constraint
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 8: Recuperación Datos
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 9: Recuperación Dato
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 10: Consultar Internas
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 11: Update - Delete
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 12: Entrega Momento 2
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 13: Procedimientos Almacenados
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 14: Procedimientos Almacenados
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 15: Power BI
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 16: Power BI
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 17: Entrega Momento 3
+                    </a>
+                </li>
+                <li>
+                    <a href="proximamente.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                        Semana 18: Retroalimentación Curso
+                    </a>
+                </li>
+            </ul>
+            </ul>
+        </nav>
+
+        <div class="p-4 border-t border-gray-800 text-xs text-center text-gray-600">
+            v1.1.0 - Gestión Base de Datos
+        </div>
+    </aside>
+
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden md:hidden"></div>
+
+    <main class="flex-1 overflow-y-auto w-full relative bg-white">
+
+        <div
+            class="sticky top-0 bg-white/90 backdrop-blur z-20 border-b border-gray-100 px-6 py-3 flex items-center justify-between">
+            <button id="desktop-toggle-btn"
+                class="hidden md:flex items-center text-gray-500 hover:text-cesde-primary transition-colors focus:outline-none"
+                title="Ocultar/Mostrar Menú">
+                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
+                    </path>
+                </svg>
+                <span class="text-xs font-bold uppercase tracking-wider">Menú</span>
+            </button>
+            <div class="text-xs text-gray-400">Gestión Base de Datos</div>
+        </div>
+
+        <div class="content-container mx-auto p-6 md:p-10 pb-20">
+
+            <div class="border-b-4 border-cesde-primary inline-block mb-8">
+                <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-1">Normalización de Bases de Datos</h1>
+                <span class="text-sm text-gray-500 font-medium uppercase tracking-wide">Unidad I: Diseño de bases de
+                    datos - Semana 4</span>
+            </div>
+
+            <section class=" bg-yellow-50 mb-12">
+                <h2 class=" text-xl font-bold text-cesde-primary mb-4 border-b pb-2">Situación: El Problema del Negocio</h2>
+
+                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-r-lg mb-6">
+                    <p class="text-gray-700 text-sm mb-4">
+                        Volvemos a nuestra tienda. El dueño te pide: <strong>"Quiero saber qué producto se vende más los lunes por la mañana en la sucursal Norte, pero solo de clientes mayores de 30 años".</strong>
+                    </p>
+                    <p class="text-gray-700 text-sm mb-4">
+                        Tienes tu Excel gigante con 50,000 filas.
+                    </p>
+                </div>
+
+                <div class="bg-red-50 border-l-4 border-red-400 p-6 rounded-r-lg mb-6">
+                    <h3 class="font-bold text-gray-800 mb-3">Los Problemas:</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2 text-sm">
+                        <li><strong>Intentas filtrar por "Lunes"...</strong> pero las fechas están como texto: "Lunes 10", "10/02/2025".</li>
+                        <li><strong>Intentas filtrar por "Norte"...</strong> pero a veces dice "Sucursal Nte", "Norte", "Sede 1".</li>
+                        <li><strong>Intentas saber la edad...</strong> pero solo tienes el nombre.</li>
+                    </ul>
+                </div>
+
+                <div class="bg-blue-50 border-l-4 border-blue-400 p-6 rounded-r-lg">
+                    <h3 class="font-bold text-gray-800 mb-3">La Reflexión:</h3>
+                    <p class="text-gray-700 text-sm">
+                        Una base de datos no solo sirve para guardar datos, sirve para <strong>responder preguntas (Queries)</strong>. Si no normalizamos y estandarizamos, no podemos responder preguntas de negocio.
+                    </p>
+                </div>
+            </section>
+
+            <section class="mb-12">
+                <h2 class="text-xl font-bold text-cesde-primary mb-4 border-b pb-2">Del Dibujo al Código: Nomenclatura y Tipos de Datos</h2>
+
+                <div class="mb-8">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Convenciones de Nomenclatura (Naming Conventions)</h3>
+                    
+                    <div class="bg-blue-50 border-l-4 border-blue-400 p-6 rounded-r-lg mb-6">
+                        <p class="text-gray-700 text-sm mb-4">
+                            Cuando pasemos nuestros dibujos a un entorno profesional, no puedes llamar a la tabla <strong>"cosas_que_vendemos"</strong>.
+                        </p>
+                    </div>
+
+                    <div class="bg-white border-2 border-cesde-primary rounded-lg p-6 mb-6">
+                        <h4 class="font-bold text-cesde-primary mb-4">1. Idioma: Inglés o Español</h4>
+                        <p class="text-gray-700 text-sm">Decisión del equipo. Nosotros usaremos <strong>Inglés</strong>.</p>
+                    </div>
+
+                    <div class="bg-white border-2 border-cesde-primary rounded-lg p-6 mb-6">
+                        <h4 class="font-bold text-cesde-primary mb-4">2. Singular vs Plural</h4>
+                        <ul class="list-disc list-inside text-gray-700 space-y-2 text-sm">
+                            <li><strong>Tabla:</strong> <code class="bg-gray-100 px-2 py-1 rounded">Customers</code> (Plural, contiene muchos clientes)</li>
+                            <li><strong>Columna:</strong> <code class="bg-gray-100 px-2 py-1 rounded">FirstName</code> (Singular, es un solo valor)</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-white border-2 border-cesde-primary rounded-lg p-6">
+                        <h4 class="font-bold text-cesde-primary mb-4">3. Formato</h4>
+                        <ul class="list-disc list-inside text-gray-700 space-y-2 text-sm mb-4">
+                            <li><strong>CamelCase:</strong> <code class="bg-gray-100 px-2 py-1 rounded">birthDate</code> (Recomendado en C#/SQL Server)</li>
+                            <li><strong>snake_case:</strong> <code class="bg-gray-100 px-2 py-1 rounded">birth_date</code> (Recomendado en Python/Postgres)</li>
+                        </ul>
+                        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg">
+                            <p class="text-gray-700 text-sm font-bold">Regla: ¡Sin espacios ni tildes!</p>
+                            <p class="text-gray-700 text-sm">Dirección → <code class="bg-gray-100 px-2 py-1 rounded">Direccion</code></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-8">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Tipos de Datos (Conceptual)</h3>
+                    
+                    <p class="text-gray-700 text-sm mb-4">
+                        Aunque no escribamos código hoy, en el diagrama debemos definir qué tipo de dato va en la caja.
+                    </p>
+
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-r-lg">
+                            <h4 class="font-bold text-gray-800 mb-2 flex items-center">
+                                <span class="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2 text-sm">A</span>
+                                Texto
+                            </h4>
+                            <p class="text-gray-700 text-sm">Nombres, Direcciones, Códigos alfanuméricos.</p>
+                        </div>
+
+                        <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-lg">
+                            <h4 class="font-bold text-gray-800 mb-2 flex items-center">
+                                <span class="bg-blue-400 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2 text-sm">1</span>
+                                Entero (INT)
+                            </h4>
+                            <p class="text-gray-700 text-sm">Cantidades, Edades, Años (Cosas que se cuentan).</p>
+                        </div>
+
+                        <div class="bg-orange-50 border-l-4 border-orange-400 p-4 rounded-r-lg">
+                            <h4 class="font-bold text-gray-800 mb-2 flex items-center">
+                                <span class="bg-orange-400 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2 text-sm">$</span>
+                                Decimal/Moneda
+                            </h4>
+                            <p class="text-gray-700 text-sm">Precios, Salarios, Promedios (Cosas que se miden).</p>
+                        </div>
+
+                        <div class="bg-purple-50 border-l-4 border-purple-400 p-4 rounded-r-lg">
+                            <h4 class="font-bold text-gray-800 mb-2 flex items-center">
+                                <span class="bg-purple-400 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2 text-sm">📅</span>
+                                Fecha/Hora
+                            </h4>
+                            <p class="text-gray-700 text-sm">Cumpleaños, Fecha de Registro.</p>
+                        </div>
+
+                        <div class="bg-pink-50 border-l-4 border-pink-400 p-4 rounded-r-lg">
+                            <h4 class="font-bold text-gray-800 mb-2 flex items-center">
+                                <span class="bg-pink-400 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2 text-sm">✓</span>
+                                Booleano (Bit)
+                            </h4>
+                            <p class="text-gray-700 text-sm">Activo/Inactivo, Si/No.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-8">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Llaves Naturales vs. Llaves Subrogadas</h3>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-white border-2 border-cesde-primary rounded-lg p-6">
+                            <h4 class="font-bold text-cesde-primary mb-3">Llave Natural</h4>
+                            <p class="text-gray-700 text-sm mb-4">
+                                Un dato que ya existe y es único. <br><strong>Ejemplo:</strong> Cédula, ISBN del libro.
+                            </p>
+                            <div class="bg-red-50 border-l-4 border-red-400 p-3 rounded-r-lg">
+                                <p class="text-gray-700 text-xs font-bold mb-2">Problema:</p>
+                                <p class="text-gray-700 text-xs">Si el gobierno cambia el formato de la cédula, se rompe tu base de datos.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white border-2 border-cesde-primary rounded-lg p-6">
+                            <h4 class="font-bold text-cesde-primary mb-3">Llave Subrogada (ID)</h4>
+                            <p class="text-gray-700 text-sm mb-4">
+                                Un número inventado por nosotros (1, 2, 3...) que no significa nada para el usuario, solo para el sistema.
+                            </p>
+                            <div class="bg-green-50 border-l-4 border-green-500 p-3 rounded-r-lg">
+                                <p class="text-gray-700 text-xs font-bold mb-2">Recomendación:</p>
+                                <p class="text-gray-700 text-xs">Usar siempre ID autoincrementable (<code class="bg-gray-100 px-1">CustomerID</code>, <code class="bg-gray-100 px-1">ProductID</code>). Es más seguro y rápido.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mb-12">
+                <h2 class="text-xl font-bold text-cesde-primary mb-4 border-b pb-2">Decisiones de Diseño Avanzadas</h2>
+
+                <div class="mb-8">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">¿Almacenar el dato calculado o calcularlo cada vez?</h3>
+
+                    <div class="bg-red-50 border-l-4 border-red-400 p-6 rounded-r-lg mb-6">
+                        <h4 class="font-bold text-gray-800 mb-3">La Regla General:</h4>
+                        <p class="text-gray-700 text-sm">
+                            <strong>Nunca almacenes lo que puedes calcular.</strong> En bases de datos transaccionales (OLTP), almacenar datos calculados se considera una mala práctica porque viola la Integridad de los Datos y la 3ª Forma Normal.
+                        </p>
+                    </div>
+
+                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-r-lg mb-6">
+                        <h4 class="font-bold text-gray-800 mb-3">El Problema de la Desincronización:</h4>
+                        <p class="text-gray-700 text-sm mb-3">
+                            Imagina que tienes una tabla <strong>Ventas</strong> con columnas: Cantidad, PrecioUnitario y Total.
+                        </p>
+                        <div class="bg-white p-3 rounded border border-yellow-300 font-mono text-xs text-gray-700 mb-3">
+                            <div>• Fila: Cantidad: 2, Precio: 100, Total: 200.</div>
+                            <div class="mt-2">• Mañana, alguien actualiza la Cantidad a 3.</div>
+                            <div class="mt-2">• Si el programador olvida actualizar también el Total, la BD queda corrupta:</div>
+                            <div class="text-red-600 font-bold">Cantidad: 3, Precio: 100, Total: 200 ❌</div>
+                        </div>
+                    </div>
+
+                    <div class="bg-green-50 border-l-4 border-green-500 p-6 rounded-r-lg">
+                        <h4 class="font-bold text-gray-800 mb-3">La Excepción - El Snapshot / Histórico:</h4>
+                        <p class="text-gray-700 text-sm mb-3">
+                            Hay un caso donde <strong>SÍ debes guardar</strong> el valor calculado: <strong>Facturación Histórica.</strong>
+                        </p>
+                        <ul class="list-disc list-inside text-gray-700 space-y-2 text-sm">
+                            <li>Si vendes un producto a $100 hoy, y mañana sube a $150, la factura de ayer NO debe cambiar.</li>
+                            <li>En este caso, guardas el <code class="bg-white px-2 py-1 rounded border border-green-300">PrecioHistorico</code> en el detalle de la venta para "congelar" el valor en el tiempo.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mb-8">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">¿Dónde poner la Llave Foránea (FK)?</h3>
+                    
+                    <p class="text-gray-700 text-sm mb-6">
+                        Esta decisión depende exclusivamente de la <strong>Cardinalidad (1:1, 1:N, N:M)</strong>.
+                    </p>
+
+                    <div class="space-y-6">
+                        <div class="bg-white border-2 border-cesde-primary rounded-lg p-6">
+                            <h4 class="font-bold text-cesde-primary mb-3 text-lg">Caso A: Relación Uno a Muchos (1:N)</h4>
+                            <p class="text-gray-700 text-sm font-bold mb-3">La mayoría de los casos</p>
+                            
+                            <p class="text-gray-700 text-sm mb-3">
+                                La llave foránea <strong>SIEMPRE va en el lado del "Muchos".</strong> Piensa en la relación Padre e Hijos.
+                            </p>
+                            
+                            <ul class="list-disc list-inside text-gray-700 space-y-2 text-sm mb-4">
+                                <li>Un Padre tiene muchos Hijos.</li>
+                                <li>Un Hijo tiene un solo Padre (biológico).</li>
+                            </ul>
+
+                            <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-lg mb-4">
+                                <p class="text-gray-700 text-sm mb-2"><strong>¿Dónde va la llave?</strong> En la tabla <code class="bg-white px-2 py-1 rounded">Hijos</code>.</p>
+                                <p class="text-gray-700 text-sm">El hijo necesita saber quién es su padre. El padre no puede tener una columna "HijoID" porque tiene muchos hijos (violaría la 1FN).</p>
+                            </div>
+
+                            <div class="bg-gray-100 p-4 rounded border-l-4 border-cesde-primary font-mono text-xs text-gray-700">
+                                <p class="font-bold mb-2">Ejemplo: Cliente (1) y Pedidos (N)</p>
+                                <p>→ La tabla Pedidos lleva la columna <code class="bg-white px-1 py-0.5 rounded">ClienteID</code></p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white border-2 border-cesde-primary rounded-lg p-6">
+                            <h4 class="font-bold text-cesde-primary mb-3 text-lg">Caso B: Relación Uno a Uno (1:1)</h4>
+                            
+                            <p class="text-gray-700 text-sm mb-3">
+                                Puede ir en cualquiera de las dos, pero se prefiere en la tabla "Débil" o la que se crea después.
+                            </p>
+
+                            <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-lg mb-4">
+                                <p class="text-gray-700 text-sm mb-2"><strong>Ejemplo: Empleado y UsuarioDelSistema</strong></p>
+                                <ul class="list-disc list-inside text-gray-700 space-y-1 text-sm">
+                                    <li>Un empleado tiene un usuario. Un usuario es de un empleado.</li>
+                                    <li>Generalmente, <code class="bg-white px-2 py-1 rounded">UsuarioDelSistema</code> lleva la FK <code class="bg-white px-2 py-1 rounded">EmpleadoID</code>, porque el empleado existe primero y el usuario es un accesorio.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="bg-white border-2 border-cesde-primary rounded-lg p-6">
+                            <h4 class="font-bold text-cesde-primary mb-3 text-lg">Caso C: Relación Muchos a Muchos (N:M)</h4>
+                            
+                            <div class="bg-red-50 border-l-4 border-red-400 p-4 rounded-r-lg mb-4">
+                                <p class="text-gray-700 text-sm"><strong>En ninguna de las dos.</strong> Se crea una <strong>Tercera Tabla (Tabla de Rompimiento o Intermedia)</strong>.</p>
+                            </div>
+
+                            <div class="bg-gray-100 p-4 rounded border-l-4 border-cesde-primary font-mono text-xs text-gray-700">
+                                <p class="font-bold mb-2">Ejemplo: Estudiantes y Materias</p>
+                                <p>→ Tabla <code class="bg-white px-1 py-0.5 rounded">Inscripciones</code> lleva:</p>
+                                <p class="mt-1">   - <code class="bg-white px-1 py-0.5 rounded">EstudianteID</code></p>
+                                <p>   - <code class="bg-white px-1 py-0.5 rounded">MateriaID</code></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mb-12">
+                <h2 class="text-xl font-bold text-cesde-primary mb-4 border-b pb-2">Demo - El Videoclub (Streaming)</h2>
+
+                <p class="text-gray-700 text-sm mb-6">
+                    Vamos a diseñar la base de datos para una app tipo Netflix.
+                </p>
+
+                <div class="mb-8">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Datos Crudos (Lo que el cliente cree que es una tabla):</h3>
+                    
+                    <div class="overflow-x-auto shadow-lg rounded-lg border border-gray-200 mb-6">
+                        <table class="min-w-full bg-white text-sm">
+                            <thead class="bg-gray-900 text-white">
+                                <tr>
+                                    <th class="px-4 py-3 text-left">Usuario</th>
+                                    <th class="px-4 py-3 text-left">Email</th>
+                                    <th class="px-4 py-3 text-left">Películas_Vistas</th>
+                                    <th class="px-4 py-3 text-left">Actores_Favoritos</th>
+                                    <th class="px-4 py-3 text-left">Plan_Suscripción</th>
+                                    <th class="px-4 py-3 text-left">Precio_Plan</th>
+                                    <th class="px-4 py-3 text-left">Fecha_Pago</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr>
+                                    <td class="px-4 py-3">Juan Suarez</td>
+                                    <td class="px-4 py-3">juan@mail.com</td>
+                                    <td class="px-4 py-3">Avatar, Titanic, Matrix</td>
+                                    <td class="px-4 py-3">DiCaprio, Keanu</td>
+                                    <td class="px-4 py-3">Premium</td>
+                                    <td class="px-4 py-3">$12.99</td>
+                                    <td class="px-4 py-3">2024-01-15</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="mb-8">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Paso 1: Normalización</h3>
+
+                    <div class="space-y-4">
+                        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-r-lg">
+                            <h4 class="font-bold text-gray-800 mb-2">1. Primera Forma Normal (1FN)</h4>
+                            <p class="text-gray-700 text-sm mb-2">
+                                <strong>Películas_Vistas</strong> es una lista.
+                            </p>
+                            <p class="text-gray-700 text-sm">
+                                Debemos separar. Un usuario ve muchas películas. Una película es vista por muchos usuarios.
+                            </p>
+                        </div>
+
+                        <div class="bg-blue-50 border-l-4 border-blue-400 p-6 rounded-r-lg">
+                            <h4 class="font-bold text-gray-800 mb-2">2. Segunda y Tercera Forma Normal (2FN y 3FN)</h4>
+                            <ul class="list-disc list-inside text-gray-700 space-y-2 text-sm">
+                                <li><strong>Precio_Plan</strong> depende del Plan_Suscripción → Crear tabla <code class="bg-white px-2 py-1 rounded border">Planes</code></li>
+                                <li><strong>Actores</strong> no dependen del usuario, dependen de la Película → Crear tabla <code class="bg-white px-2 py-1 rounded border">Actores</code></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-8">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Modelado - El Diagrama Final</h3>
+                    
+                    <p class="text-gray-700 text-sm mb-6">
+                        Vamos a dibujar las "tablas" con sus tipos de datos:
+                    </p>
+
+                    <div class="grid md:grid-cols-2 gap-4 mb-4">
+                        <div class="bg-white border-2 border-cesde-primary rounded-lg p-4">
+                            <h4 class="font-bold text-cesde-primary mb-3 text-center">Tabla: Usuarios</h4>
+                            <div class="space-y-2 font-mono text-sm text-gray-700">
+                                <div class="bg-blue-100 px-3 py-2 rounded">
+                                    <span class="font-bold">UsuarioID</span> <span class="text-gray-500">(PK - Entero)</span>
+                                </div>
+                                <div class="bg-gray-100 px-3 py-2 rounded">
+                                    <span class="font-bold">Email</span> <span class="text-gray-500">(Texto)</span>
+                                </div>
+                                <div class="bg-gray-100 px-3 py-2 rounded">
+                                    <span class="font-bold">Nombre</span> <span class="text-gray-500">(Texto)</span>
+                                </div>
+                                <div class="bg-green-100 px-3 py-2 rounded">
+                                    <span class="font-bold">PlanID</span> <span class="text-gray-500">(FK - Entero)</span> → Planes
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white border-2 border-cesde-primary rounded-lg p-4">
+                            <h4 class="font-bold text-cesde-primary mb-3 text-center">Tabla: Planes</h4>
+                            <div class="space-y-2 font-mono text-sm text-gray-700">
+                                <div class="bg-blue-100 px-3 py-2 rounded">
+                                    <span class="font-bold">PlanID</span> <span class="text-gray-500">(PK - Entero)</span>
+                                </div>
+                                <div class="bg-gray-100 px-3 py-2 rounded">
+                                    <span class="font-bold">Nombre</span> <span class="text-gray-500">(Texto)</span>
+                                </div>
+                                <div class="bg-gray-100 px-3 py-2 rounded">
+                                    <span class="font-bold">Precio</span> <span class="text-gray-500">(Moneda)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white border-2 border-cesde-primary rounded-lg p-4">
+                            <h4 class="font-bold text-cesde-primary mb-3 text-center">Tabla: Películas</h4>
+                            <div class="space-y-2 font-mono text-sm text-gray-700">
+                                <div class="bg-blue-100 px-3 py-2 rounded">
+                                    <span class="font-bold">PeliculaID</span> <span class="text-gray-500">(PK - Entero)</span>
+                                </div>
+                                <div class="bg-gray-100 px-3 py-2 rounded">
+                                    <span class="font-bold">Titulo</span> <span class="text-gray-500">(Texto)</span>
+                                </div>
+                                <div class="bg-gray-100 px-3 py-2 rounded">
+                                    <span class="font-bold">Año</span> <span class="text-gray-500">(Entero)</span>
+                                </div>
+                                <div class="bg-gray-100 px-3 py-2 rounded">
+                                    <span class="font-bold">DuracionMinutos</span> <span class="text-gray-500">(Entero)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white border-2 border-cesde-primary rounded-lg p-4">
+                            <h4 class="font-bold text-cesde-primary mb-3 text-center bg-orange-100 px-3 py-2 rounded -m-4 mb-3">Tabla: HistorialVistas</h4>
+                            <p class="text-xs text-gray-600 mb-3 font-italic">→ Tabla que rompe la relación M:N</p>
+                            <div class="space-y-2 font-mono text-sm text-gray-700">
+                                <div class="bg-blue-100 px-3 py-2 rounded">
+                                    <span class="font-bold">HistorialID</span> <span class="text-gray-500">(PK - Entero)</span>
+                                </div>
+                                <div class="bg-green-100 px-3 py-2 rounded">
+                                    <span class="font-bold">UsuarioID</span> <span class="text-gray-500">(FK)</span>
+                                </div>
+                                <div class="bg-green-100 px-3 py-2 rounded">
+                                    <span class="font-bold">PeliculaID</span> <span class="text-gray-500">(FK)</span>
+                                </div>
+                                <div class="bg-gray-100 px-3 py-2 rounded">
+                                    <span class="font-bold">FechaVisualizacion</span> <span class="text-gray-500">(Fecha)</span>
+                                </div>
+                                <div class="bg-gray-100 px-3 py-2 rounded">
+                                    <span class="font-bold">MinutoDondeQuedo</span> <span class="text-gray-500">(Entero)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-r-lg text-sm">
+                        <p class="text-gray-700"><strong>Observación:</strong> La tabla HistorialVistas es la tabla intermedia que conecta Usuarios con Películas en una relación N:M. Permite saber qué películas vio cada usuario y cuándo.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mb-12">
+                <h2 class="text-xl font-bold text-cesde-primary mb-4 border-b pb-2">Práctica - Taller de E-Commerce</h2>
+
+                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-r-lg mb-8">
+                    <p class="text-gray-700 text-sm">
+                        Vamos a diseñar el cerebro de una tienda de ropa online. Toma una hoja de papel horizontal.
+                    </p>
+                </div>
+
+                <div class="mb-8">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Requerimientos</h3>
+                    
+                    <div class="space-y-3">
+                        <div class="bg-white border-l-4 border-blue-400 p-4 rounded-r-lg">
+                            <p class="text-gray-700 text-sm"><strong>1. Productos Base:</strong> Tenemos Ropa (Camisas, Pantalones). Cada prenda tiene Nombre, Precio y Descripción.</p>
+                        </div>
+
+                        <div class="bg-white border-l-4 border-red-400 p-4 rounded-r-lg">
+                            <p class="text-gray-700 text-sm"><strong>2. Variantes - (¡OJO!):</strong> Una misma camisa viene en Tallas (S, M, L) y Colores (Rojo, Azul).</p>
+                        </div>
+
+                        <div class="bg-white border-l-4 border-green-400 p-4 rounded-r-lg">
+                            <p class="text-gray-700 text-sm"><strong>3. Clientes y Pedidos:</strong> Tenemos Clientes que hacen Pedidos.</p>
+                        </div>
+
+                        <div class="bg-white border-l-4 border-purple-400 p-4 rounded-r-lg">
+                            <p class="text-gray-700 text-sm"><strong>4. Relaciones:</strong> Un pedido puede tener varias prendas.</p>
+                        </div>
+
+                        <div class="bg-white border-l-4 border-orange-400 p-4 rounded-r-lg">
+                            <p class="text-gray-700 text-sm"><strong>5. Stock - (¡OJO!):</strong> Necesitamos manejar el Stock (¿Cuántas camisas Rojas talla M me quedan?).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-8">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">La Solución</h3>
+                    
+                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-r-lg mb-6">
+                        <p class="text-gray-700 text-sm mb-3">
+                            Aquí la trampa está en el punto 2 y 5. Si pones "Color" en la tabla "Producto", tendrías que crear "Camisa Polo Roja", "Camisa Polo Azul". <strong>Eso repite datos.</strong>
+                        </p>
+                        <p class="text-gray-700 text-sm font-bold">
+                            La clave: Separar ProductoBase de sus Variantes.
+                        </p>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-4 mb-6">
+                        <div class="bg-white border-2 border-cesde-primary rounded-lg p-4">
+                            <h4 class="font-bold text-cesde-primary mb-3">1. Entidad ProductosBase</h4>
+                            <div class="space-y-2 font-mono text-sm text-gray-700">
+                                <div class="bg-blue-100 px-3 py-2 rounded">
+                                    <span class="font-bold">ProductoID</span> <span class="text-gray-500">(PK)</span>
+                                </div>
+                                <div class="bg-gray-100 px-3 py-2 rounded">
+                                    <span class="font-bold">Nombre</span> <span class="text-gray-500">(Texto)</span>
+                                </div>
+                                <div class="bg-gray-100 px-3 py-2 rounded">
+                                    <span class="font-bold">Descripcion</span> <span class="text-gray-500">(Texto)</span>
+                                </div>
+                                <div class="bg-gray-100 px-3 py-2 rounded">
+                                    <span class="font-bold">PrecioBase</span> <span class="text-gray-500">(Moneda)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white border-2 border-cesde-primary rounded-lg p-4">
+                            <h4 class="font-bold text-cesde-primary mb-3">2. Entidad Inventario (¡La Magia!)</h4>
+                            <div class="space-y-2 font-mono text-sm text-gray-700">
+                                <div class="bg-blue-100 px-3 py-2 rounded">
+                                    <span class="font-bold">InventarioID</span> <span class="text-gray-500">(PK)</span>
+                                </div>
+                                <div class="bg-green-100 px-3 py-2 rounded">
+                                    <span class="font-bold">ProductoID</span> <span class="text-gray-500">(FK)</span>
+                                </div>
+                                <div class="bg-gray-100 px-3 py-2 rounded">
+                                    <span class="font-bold">Talla</span> <span class="text-gray-500">(Texto)</span>
+                                </div>
+                                <div class="bg-gray-100 px-3 py-2 rounded">
+                                    <span class="font-bold">Color</span> <span class="text-gray-500">(Texto)</span>
+                                </div>
+                                <div class="bg-gray-100 px-3 py-2 rounded">
+                                    <span class="font-bold">CantidadStock</span> <span class="text-gray-500">(Entero)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white border-2 border-cesde-primary rounded-lg p-4">
+                            <h4 class="font-bold text-cesde-primary mb-3">3. Entidad Pedidos</h4>
+                            <div class="space-y-2 font-mono text-sm text-gray-700">
+                                <div class="bg-blue-100 px-3 py-2 rounded">
+                                    <span class="font-bold">PedidoID</span> <span class="text-gray-500">(PK)</span>
+                                </div>
+                                <div class="bg-green-100 px-3 py-2 rounded">
+                                    <span class="font-bold">ClienteID</span> <span class="text-gray-500">(FK)</span>
+                                </div>
+                                <div class="bg-gray-100 px-3 py-2 rounded">
+                                    <span class="font-bold">Fecha</span> <span class="text-gray-500">(Fecha)</span>
+                                </div>
+                                <div class="bg-gray-100 px-3 py-2 rounded">
+                                    <span class="font-bold">Total</span> <span class="text-gray-500">(Moneda)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white border-2 border-cesde-primary rounded-lg p-4">
+                            <h4 class="font-bold text-cesde-primary mb-3">4. Entidad DetallePedido</h4>
+                            <div class="space-y-2 font-mono text-sm text-gray-700">
+                                <div class="bg-blue-100 px-3 py-2 rounded">
+                                    <span class="font-bold">DetalleID</span> <span class="text-gray-500">(PK)</span>
+                                </div>
+                                <div class="bg-green-100 px-3 py-2 rounded">
+                                    <span class="font-bold">PedidoID</span> <span class="text-gray-500">(FK)</span>
+                                </div>
+                                <div class="bg-green-100 px-3 py-2 rounded">
+                                    <span class="font-bold">InventarioID</span> <span class="text-gray-500">(FK)</span>
+                                </div>
+                                <div class="bg-gray-100 px-3 py-2 rounded">
+                                    <span class="font-bold">Cantidad</span> <span class="text-gray-500">(Entero)</span>
+                                </div>
+                                <div class="bg-gray-100 px-3 py-2 rounded">
+                                    <span class="font-bold">PrecioUnitario</span> <span class="text-gray-500">(Moneda)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 border-l-4 border-blue-400 p-6 rounded-r-lg">
+                        <h4 class="font-bold text-gray-800 mb-3">Explicación:</h4>
+                        <p class="text-gray-700 text-sm mb-3">
+                            Así, el producto "Camisa Polo" existe <strong>una sola vez</strong>, pero tiene muchas variantes en el inventario.
+                        </p>
+                        <ul class="list-disc list-inside text-gray-700 space-y-2 text-sm">
+                            <li>Camisa Polo - Roja - Talla S: 10 unidades</li>
+                            <li>Camisa Polo - Roja - Talla M: 5 unidades</li>
+                            <li>Camisa Polo - Azul - Talla S: 15 unidades</li>
+                            <li>... y así sucesivamente</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mb-12">
+                <h2 class="text-xl font-bold text-cesde-primary mb-4 border-b pb-2">Ejercicio Independiente: Base de Datos Académica</h2>
+
+                <div class="bg-blue-50 border-l-4 border-blue-400 p-6 rounded-r-lg mb-8">
+                    <h3 class="font-bold text-gray-800 mb-3">Diseño Completo de Base de Datos Académica</h3>
+                    <p class="text-gray-700 text-sm mb-3">
+                        <strong>Herramienta:</strong> Papel, Draw.io o Excel (Tablas separadas)
+                    </p>
+                </div>
+
+                <div class="mb-8">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Enunciado del Problema</h3>
+                    
+                    <div class="bg-white border-l-4 border-blue-400 p-6 rounded-r-lg mb-6">
+                        <p class="text-gray-700 text-sm mb-4">
+                            El colegio <strong>"San Knowledge"</strong> necesita organizar su información de manera profesional. Actualmente todo está en archivos separados y necesitan una base de datos unificada.
+                        </p>
+
+                        <h4 class="font-bold text-gray-800 mb-3">Entidades Principales:</h4>
+                        <ul class="list-disc list-inside text-gray-700 space-y-2 text-sm">
+                            <li><strong>Alumnos:</strong> Datos personales, Acudiente</li>
+                            <li><strong>Profesores:</strong> Datos personales, Profesión</li>
+                            <li><strong>Grados/Cursos:</strong> Primero A, Segundo B, etc.</li>
+                            <li><strong>Materias:</strong> Matemáticas, Español, Ciencias, etc.</li>
+                        </ul>
+                    </div>
+
+                    <h4 class="text-lg font-bold text-gray-800 mb-4">Reglas de Negocio (CRÍTICAS):</h4>
+                    <div class="space-y-3">
+                        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg">
+                            <p class="text-gray-700 text-sm"><strong>1.</strong> Un alumno pertenece a <strong>un solo Grado</strong> (actualmente).</p>
+                        </div>
+
+                        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg">
+                            <p class="text-gray-700 text-sm"><strong>2.</strong> Un Grado tiene <strong>muchas Materias</strong> asignadas.</p>
+                        </div>
+
+                        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg">
+                            <p class="text-gray-700 text-sm"><strong>3.</strong> Una Materia en un Grado específico es dictada por <strong>un Profesor</strong>. <br>
+                            <span class="text-xs text-gray-600 ml-4">Ej: Matemáticas de 5to A → Profe Juan | Matemáticas de 5to B → Profe Ana</span></p>
+                        </div>
+
+                        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg">
+                            <p class="text-gray-700 text-sm"><strong>4.</strong> Se necesitan guardar las <strong>Notas</strong> de cada alumno por materia y periodo (Periodo 1, 2, 3).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-8">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Resultado del Ejercicio</h3>
+
+                    <div class="bg-green-50 border-l-4 border-green-500 p-6 rounded-r-lg mb-6">
+                        <h4 class="font-bold text-gray-800 mb-3">Debes Crear:</h4>
+                        <p class="text-gray-700 text-sm mb-3">
+                            Un <strong>Diagrama de Tablas (Entidad-Relación)</strong> que muestre:
+                        </p>
+                        <ol class="list-decimal list-inside text-gray-700 space-y-2 text-sm">
+                            <li><strong>Nombre de la Tabla</strong></li>
+                            <li><strong>Columnas (Atributos)</strong> con su tipo de dato sugerido (Texto, Número, Fecha)</li>
+                            <li><strong>Líneas que conecten las tablas</strong> (Relaciones con sus cardinalidades)</li>
+                        </ol>
+                    </div>
+
+                    <div class="bg-blue-50 border-l-4 border-blue-400 p-6 rounded-r-lg">
+                        <h4 class="font-bold text-gray-800 mb-3">Pistas para el Diseño:</h4>
+                        <ul class="list-disc list-inside text-gray-700 space-y-2 text-sm">
+                            <li>¿Dónde va la FK de Profesor? En la tabla que conecta Materia con Grado.</li>
+                            <li>¿Cómo guardar notas por periodo? Necesitas una tabla que conecte Alumno, Materia y Periodo.</li>
+                            <li>No olvides los Acudientes. ¿Es una relación 1:1 o 1:N?</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mb-8">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Pregunta de Reflexión</h3>
+
+                    <div class="bg-red-50 border-l-4 border-red-400 p-6 rounded-r-lg mb-6">
+                        <p class="text-gray-700 text-sm font-bold mb-3">
+                            Miren su diagrama del colegio. ¿Qué pasaría si el colegio decide que <strong>un alumno puede ver materias de grados diferentes</strong> (adelantar materias)?
+                        </p>
+                        <div class="bg-white p-4 rounded border-l-4 border-red-400 mt-3">
+                            <p class="text-gray-700 text-sm">
+                                <strong>Respuesta:</strong> Nuestro diseño actual (Alumno → Grado en relación 1:1) se rompería. Tendríamos que cambiar la relación a través de una tabla intermedia.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="bg-purple-50 border-l-4 border-purple-400 p-6 rounded-r-lg">
+                        <h4 class="font-bold text-gray-800 mb-3">Aprendizaje Clave:</h4>
+                        <p class="text-gray-700 text-sm">
+                            El diseño de la base de datos depende <strong>100% de las Reglas del Negocio</strong>. Si el negocio cambia, la base de datos debe evolucionar. Por eso es tan importante tener claros los requerimientos ANTES de diseñar.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mb-12">
+                <h2 class="text-xl font-bold text-cesde-primary mb-4 border-b pb-2">Instalación - El Motor (SQL Server Developer Edition)</h2>
+
+                <div class="bg-blue-50 border-l-4 border-blue-400 p-6 rounded-r-lg mb-8">
+                    <p class="text-gray-700 text-sm">
+                        El <strong>"Motor"</strong> es el cerebro que guarda los datos. Sin esto, no hay base de datos. Vamos a instalar SQL Server, que es el sistema gestor oficial de Microsoft.
+                    </p>
+                </div>
+
+                <div class="mb-8">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Paso 1: Descargar SQL Server</h3>
+
+                    <div class="bg-white border-l-4 border-blue-400 p-6 rounded-r-lg mb-6">
+                        <p class="text-gray-700 text-sm mb-4">
+                            Ingresamos a la siguiente página:
+                        </p>
+                        <div class="bg-gray-100 p-4 rounded border-l-4 border-blue-400 text-xs text-gray-700 font-mono break-all">
+                            https://www.microsoft.com/es-es/sql-server/sql-server-downloads
+                        </div>
+                    </div>
+
+                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-r-lg">
+                        <h4 class="font-bold text-gray-800 mb-3">Selección de Edición:</h4>
+                        <ul class="list-disc list-inside text-gray-700 space-y-2 text-sm">
+                            <li>Bajen hasta encontrar las <strong>Descargas principales</strong>.</li>
+                            <li>Verán varias opciones: nos enfocaremos en <strong>"Developer"</strong> y "Express".</li>
+                            <li><strong>Elegimos: Developer</strong> (Es la versión completa Enterprise, pero gratuita para uso educativo/desarrollo).</li>
+                            <li>Clic en <strong>Descargar la edición Enterprise Developer</strong>.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mb-8">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Paso 2: Ejecutar el Instalador</h3>
+
+                    <div class="space-y-4">
+                        <div class="bg-white border-l-4 border-green-400 p-4 rounded-r-lg">
+                            <p class="text-gray-700 text-sm"><strong>Ejecuten el archivo descargado:</strong> <code class="bg-gray-100 px-2 py-1 rounded">SQL202X-SSEI-Dev.exe</code></p>
+                        </div>
+
+                        <div class="bg-white border-l-4 border-green-400 p-4 rounded-r-lg">
+                            <p class="text-gray-700 text-sm mb-2"><strong>Les aparecerán 3 opciones:</strong></p>
+                            <ul class="list-disc list-inside text-gray-700 space-y-1 text-sm ml-2">
+                                <li>Básica</li>
+                                <li>Personalizada</li>
+                                <li>Descargar medios</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-red-50 border-l-4 border-red-400 p-4 rounded-r-lg">
+                            <p class="text-gray-700 text-sm font-bold">
+                                ✓ Seleccionen: <strong>BÁSICA</strong>
+                            </p>
+                            <p class="text-gray-600 text-xs mt-2">(Es la más rápida y configura todo lo necesario por defecto)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-8">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Paso 3: Proceso de Instalación</h3>
+
+                    <div class="space-y-3">
+                        <div class="bg-white border-l-4 border-purple-400 p-4 rounded-r-lg">
+                            <p class="text-gray-700 text-sm">✓ Clic en <strong>Aceptar los términos de licencia</strong></p>
+                        </div>
+
+                        <div class="bg-white border-l-4 border-purple-400 p-4 rounded-r-lg">
+                            <p class="text-gray-700 text-sm">✓ Clic en <strong>Instalar</strong> (Dejen la ruta por defecto en <code class="bg-gray-100 px-2 py-1 rounded">C:</code>)</p>
+                        </div>
+
+                        <div class="bg-white border-l-4 border-purple-400 p-4 rounded-r-lg">
+                            <p class="text-gray-700 text-sm">✓ <strong>Esperar:</strong> El sistema descargará unos 1000 MB y luego instalará. Esto puede tardar unos minutos.</p>
+                        </div>
+
+                        <div class="bg-orange-50 border-l-4 border-orange-400 p-6 rounded-r-lg">
+                            <p class="text-gray-700 text-sm font-bold mb-2"> ¡NO CIERRES LA VENTANA AÚN!</p>
+                            <p class="text-gray-700 text-sm">Cuando termine, verán una pantalla llena de rutas y nombres técnicos.</p>
+                            <p class="text-gray-700 text-sm mt-2"><strong>IMPORTANTE:</strong> En la parte inferior de esa ventana hay un botón que dice <strong>"Instalar SSMS"</strong>. Haremos clic ahí.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-8">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Paso 4: Instalar SSMS (SQL Server Management Studio)</h3>
+
+                    <div class="bg-green-50 border-l-4 border-green-500 p-6 rounded-r-lg mb-6">
+                        <p class="text-gray-700 text-sm mb-3">
+                            <strong>SSMS</strong> es la herramienta visual con la que nosotros hablamos con el Motor (SQL Server).
+                        </p>
+                        <p class="text-gray-700 text-sm">Sin ella, tendríamos que escribir código SQL puro. Con SSMS, tenemos una interfaz amigable.</p>
+                    </div>
+
+                    <h4 class="font-bold text-gray-800 mb-4">Descarga Automática:</h4>
+                    <div class="bg-white border-l-4 border-blue-400 p-4 rounded-r-lg mb-6">
+                        <p class="text-gray-700 text-sm mb-3">
+                            Al hacer clic en el botón de instalación de SSMS, los llevará a:
+                        </p>
+                        <div class="bg-gray-100 p-4 rounded border-l-4 border-blue-400 text-xs text-gray-700 font-mono break-all">
+                            https://learn.microsoft.com/es-es/ssms/install/install
+                        </div>
+                    </div>
+
+                    <h4 class="font-bold text-gray-800 mb-4">Instalación de SSMS:</h4>
+                    
+                    <div class="mb-6 overflow-x-auto shadow-lg rounded-lg border border-gray-200">
+                        <img src="src/sql.png" alt="SQL Server Management Studio instalación" class="w-full h-auto">
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="bg-white border-l-4 border-blue-400 p-4 rounded-r-lg">
+                            <p class="text-gray-700 text-sm">✓ Ejecuten el instalador: <code class="bg-gray-100 px-2 py-1 rounded">SSMS-Setup-ENU.exe</code></p>
+                        </div>
+
+                        <div class="bg-white border-l-4 border-blue-400 p-4 rounded-r-lg">
+                            <p class="text-gray-700 text-sm">✓ Esta instalación es sencilla: Clic en <strong>Install</strong></p>
+                        </div>
+
+                        <div class="bg-white border-l-4 border-blue-400 p-4 rounded-r-lg">
+                            <p class="text-gray-700 text-sm">✓ En el paquete de idiomas, recomiendo que dejen también el de <strong>inglés</strong></p>
+                        </div>
+
+                        <div class="bg-red-50 border-l-4 border-red-400 p-4 rounded-r-lg">
+                            <p class="text-gray-700 text-sm"><strong>Nota:</strong> Puede pedir reiniciar el equipo al finalizar. Si lo pide, háganlo.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-blue-50 border-l-4 border-blue-400 p-6 rounded-r-lg">
+                    <h4 class="font-bold text-gray-800 mb-3">✓ ¡Listo!</h4>
+                    <p class="text-gray-700 text-sm">Una vez completada la instalación, tendremos:</p>
+                    <ul class="list-disc list-inside text-gray-700 space-y-1 text-sm mt-3">
+                        <li><strong>SQL Server:</strong> El motor que guarda los datos</li>
+                        <li><strong>SSMS:</strong> La interfaz visual para ordenarle al motor</li>
+                    </ul>
+                    <p class="text-gray-700 text-sm mt-4">¡Ahora estamos listos para crear y gestionar verdaderas bases de datos!</p>
+                </div>
+            </section>
+
+            <footer class="mt-16 pt-8 border-t border-gray-200 text-center text-sm text-gray-500">
+                <img src="src/logo.png" class="h-8 mx-auto mb-3 opacity-50 grayscale invert">
+                <p>Docente: <strong>Santiago Yosa González</strong></p>
+            </footer>
+        </div>
+    </main>
+
+    <script>
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const desktopToggleBtn = document.getElementById('desktop-toggle-btn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        const contentContainer = document.querySelector('.content-container');
+
+        // Función para toggle en móvil (Overlay)
+        function toggleMobileMenu() {
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        }
+
+        // Función para toggle en escritorio (Espacio)
+        function toggleDesktopSidebar() {
+            // El sidebar cambiará su ancho a 0, permitiendo que el main se expanda automáticamente
+            sidebar.classList.toggle('sidebar-closed');
+            // Expandir contenedor cuando sidebar está cerrado
+            contentContainer.classList.toggle('expanded');
+        }
+
+        mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+        overlay.addEventListener('click', toggleMobileMenu);
+        desktopToggleBtn.addEventListener('click', toggleDesktopSidebar);
+    </script>
+</body>
+
+</html>

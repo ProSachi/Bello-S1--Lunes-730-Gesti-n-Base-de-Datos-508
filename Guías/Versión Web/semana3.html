@@ -35,13 +35,33 @@
 
         /* Transición suave para el sidebar */
         #sidebar {
-            transition: all 0.3s ease-in-out;
+            transition: width 0.3s ease-in-out, flex-basis 0.3s ease-in-out;
+            flex-basis: auto;
         }
 
         /* Clase para ocultar sidebar en desktop */
         .sidebar-closed {
-            margin-left: -18rem;
-            /* w-72 es 18rem */
+            width: 0 !important;
+            flex-basis: 0 !important;
+            flex-shrink: 1 !important;
+            overflow: hidden;
+        }
+
+        /* Asegurar que main se expanda */
+        main {
+            flex-grow: 1;
+            flex-basis: auto;
+        }
+
+        /* Contenedor de contenido - Default */
+        .content-container {
+            max-width: 56rem;
+            transition: max-width 0.3s ease-in-out;
+        }
+
+        /* Cuando sidebar está cerrado, expandir contenedor */
+        .content-container.expanded {
+            max-width: 100%;
         }
 
         /* Estilos gráficos MER */
@@ -125,8 +145,8 @@
                     </a>
                 </li>
                 <li>
-                    <a href="proximamente.html"
-                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm opacity-50 cursor-not-allowed">
+                    <a href="semana4.html"
+                        class="block py-2 px-6 hover:bg-gray-900 hover:text-white border-l-4 border-transparent transition-colors text-sm">
                         Semana 4: Normalización
                     </a>
                 </li>
@@ -241,7 +261,7 @@
             <div class="text-xs text-gray-400">Gestión Base de Datos</div>
         </div>
 
-        <div class="max-w-6xl mx-auto p-6 md:p-10 pb-20">
+        <div class="content-container mx-auto p-6 md:p-10 pb-20">
 
             <div class="border-b-4 border-cesde-primary inline-block mb-8">
                 <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-1">Normalización de Bases de Datos</h1>
@@ -1849,6 +1869,7 @@
         const desktopToggleBtn = document.getElementById('desktop-toggle-btn');
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('overlay');
+        const contentContainer = document.querySelector('.content-container');
 
         // Función para toggle en móvil (Overlay)
         function toggleMobileMenu() {
@@ -1863,8 +1884,10 @@
 
         // Función para toggle en escritorio (Espacio)
         function toggleDesktopSidebar() {
-            // Simplemente movemos el sidebar fuera de la vista usando margen negativo
+            // El sidebar cambiará su ancho a 0, permitiendo que el main se expanda automáticamente
             sidebar.classList.toggle('sidebar-closed');
+            // Expandir contenedor cuando sidebar está cerrado
+            contentContainer.classList.toggle('expanded');
         }
 
         mobileMenuBtn.addEventListener('click', toggleMobileMenu);
