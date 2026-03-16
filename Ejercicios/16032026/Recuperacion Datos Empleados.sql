@@ -1,0 +1,30 @@
+SELECT COLUMNAS FROM TABLA
+
+SELECT DepartmentName FROM Departments
+
+SELECT * FROM Departments
+
+SELECT * FROM Employees 
+
+SELECT FirstName + ' ' + LastName , EmployeeID FROM Employees
+
+SELECT TOP 5 * FROM Employees
+
+SELECT DISTINCT Department, DateIn FROM Employees
+
+SELECT Department * 3 AS INVENTADO FROM Employees
+
+SELECT COUNT(Department) FROM Employees 
+
+
+
+SELECT COUNT(Department)
+FROM Employees
+WHERE Department=1
+
+SELECT SUM(Department)
+FROM Employees
+WHERE Department=1
+
+
+
