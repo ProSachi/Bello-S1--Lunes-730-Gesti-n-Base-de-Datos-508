@@ -7,6 +7,8 @@ CREATE TABLE Departments
 	DepartmentName VARCHAR(50) NOT NULL CHECK (DepartmentName in ('Dev', 'Teacher', 'Treasure')),
 );
 
+
+
 CREATE TABLE Employees
 (
 	EmployeeID INT PRIMARY KEY IDENTITY(1,1),
@@ -23,6 +25,7 @@ INSERT INTO Departments (DepartmentName) VALUES
 ('Dev'),
 ('Teacher'),
 ('Treasure');
+
 
 INSERT INTO dbo.Employees (FirstName, LastName, Department, Email, Addres)
 VALUES 
@@ -47,9 +50,13 @@ VALUES
     );
 
     INSERT INTO Names (NameEmployee, EmployeeId)
-    SELECT FirstName + ' ' + LastName , EmployeeID FROM Employees
+    SELECT FirstName + ' ' + LastName + '2', EmployeeID FROM Employees
+
 
     SELECT * FROM Names
+        
+    SELECT * 
+    FROM Employees
 
 
 INSERT INTO dbo.Employees (FirstName, LastName, Department, Email, Addres)
